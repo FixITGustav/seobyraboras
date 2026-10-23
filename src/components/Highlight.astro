@@ -1,0 +1,7 @@
+---
+import { splitHighlight } from '../lib/content';
+interface Props { text: string; mark?: string }
+const { text, mark } = Astro.props;
+const h = splitHighlight(text, mark);
+---
+{h.before}{h.mark && <span class="mark">{h.mark}</span>}{h.after}

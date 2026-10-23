@@ -1,0 +1,76 @@
+{
+  "seo": {
+    "titel": "SEO-byrå i Borås | Fix IT Webbyrå",
+    "beskrivning": "Vi hjälper småföretag i Borås att synas på Google. Lokal SEO, Google Företagsprofil och texter som säljer. Inget krångligt fackspråk. Boka ett möte.",
+    "delningsbild": "",
+    "delningsbild_alt": ""
+  },
+  "hero": {
+    "overrubrik": "SEO-byrå i Borås",
+    "h1": "Vi hjälper småföretag i Borås att synas på Google",
+    "h1_markering": "synas på Google",
+    "ingress": "När någon i Borås letar efter en elektriker, en revisor eller en frisör väljer de nästan alltid bland de första träffarna. Vi ser till att ditt företag finns där. Utan krångligt fackspråk, och med ett arbete du kan följa.",
+    "knapp": "Boka möte",
+    "fortroende": [
+      { "rubrik": "Google Partner", "text": "certifierade för Google Ads" },
+      { "rubrik": "5,0 på Google", "text": "36 omdömen" },
+      { "rubrik": "Sedan 2020", "text": "startade i Borås" }
+    ]
+  },
+  "tjanster": {
+    "overrubrik": "Det här gör vi",
+    "rubrik": "Lokal SEO för företag i Borås",
+    "ingress": "SEO låter tekniskt. Det mesta handlar ändå om tre saker: att Google förstår vad du gör, var du finns och varför du är ett bra val.",
+    "lista": [
+      { "rubrik": "Google Företagsprofil", "text": "Kartan och profilen som dyker upp när någon söker lokalt. Vi fyller i, rättar och håller den uppdaterad med bilder, tjänster och omdömen.", "sokning": "bilverkstad nära mig" },
+      { "rubrik": "Teknisk SEO", "text": "Snabb sida, rätt struktur och inga trasiga länkar. Sånt som besökaren aldrig ser, men som Google bryr sig mycket om.", "sokning": "varför syns inte min hemsida" },
+      { "rubrik": "Texter som svarar på frågor", "text": "En sida per tjänst du säljer och svar på det dina kunder undrar över. Skrivet så att både människor och sökmotorer hänger med.", "sokning": "vad kostar en elbesiktning" },
+      { "rubrik": "Lokala länkar", "text": "Länkar från föreningar, samarbetspartners och lokala sajter i Sjuhärad. För Google räknas varje sådan länk som en rekommendation.", "sokning": "redovisningsbyrå borås" },
+      { "rubrik": "Mätning du förstår", "text": "Vi kopplar upp Search Console och Analytics och visar hur det går. Med vanliga ord, utan en tjock rapport du aldrig läser.", "sokning": "hur många hittar min sajt" },
+      { "rubrik": "Google Ads som extra skjuts", "text": "Behöver telefonen ringa redan nästa vecka? Som Google Partner kan vi köra annonser medan SEO:n växer till sig.", "sokning": "akut rörmokare borås" }
+    ]
+  },
+  "robot": {
+    "overrubrik": "Testa själv",
+    "rubrik": "Vill du se den här sidan som Google ser den?",
+    "text": "Tryck på knappen, eller på R. Hela sidan byter skepnad och visar det en sökmotor faktiskt läser: rubriker, länkar och text. Inga färger, inga bilder. Det är så vi tittar på din sajt när vi börjar.",
+    "knapp": "Visa robotläget"
+  },
+  "process": {
+    "overrubrik": "Så går det till",
+    "rubrik": "Möte, produktion, avstämning",
+    "ingress": "Samma tre steg som för alla våra kunder. Du vet hela tiden var vi är och vad som händer härnäst.",
+    "steg": [
+      { "rubrik": "Möte", "text": "Vi pratar om ditt företag, dina kunder och vad de söker efter. Sen tittar vi på hur din sajt står sig idag. Efter mötet får du ett pris som vi går igenom tillsammans." },
+      { "rubrik": "Produktion", "text": "Vi gör jobbet. Rättar det tekniska, skriver texterna, fixar profilen och bygger länkar. Du behöver inte lära dig ett enda nytt ord." },
+      { "rubrik": "Avstämning", "text": "Vi ses igen och kollar siffrorna. Vad har hänt, vad fungerar och vad gör vi härnäst?" }
+    ]
+  },
+  "boras": {
+    "overrubrik": "Borås och vi",
+    "rubrik": "Det var i Borås det började",
+    "text": "Mikael pluggade webbutveckling på Högskolan i Borås, och sommaren 2021 flyttade vi in på vårt första kontor mitt i stan. Sen dess har företaget vuxit och kontoret flyttat till Mölndal, ungefär sex mil bort längs 40:an.\n\nVi känner fortfarande stan och tar gärna fler kunder härifrån. Möten löser vi på plats eller över video, vad som passar dig bäst.",
+    "bild": "",
+    "bild_alt": ""
+  },
+  "faq": {
+    "overrubrik": "Vanliga frågor",
+    "rubrik": "Folk frågar också",
+    "ingress": "Frågorna vi får oftast om SEO. Öppna en, så dyker nästa upp.",
+    "fragor": [
+      { "fraga": "Hur lång tid tar det innan SEO ger resultat?", "svar": "Oftast några månader innan det märks ordentligt. Lokala sökningar som \"elektriker borås\" går ofta fortare än sökningar i hela landet, eftersom konkurrensen är mindre. Vi visar löpande vad som händer, så du slipper gissa." },
+      { "fraga": "Måste jag ha en ny hemsida för att lyckas med SEO?", "svar": "Nej, inte alltid. Vi börjar med att titta på den du har. Är den byggd i WordPress kan vi ofta jobba vidare i den. Ibland är det smartare att bygga om, och då säger vi det rakt ut." },
+      { "fraga": "Vad kostar SEO i Borås?", "svar": "Det beror på hur mycket som behöver göras och hur hård konkurrensen är i din bransch. Efter första mötet får du ett pris, och vi går igenom det tillsammans så att du vet vad du betalar för." },
+      { "fraga": "Vad är skillnaden mellan SEO och Google Ads?", "svar": "Med Google Ads betalar du för varje klick och syns direkt, men annonserna försvinner när du slutar betala. SEO tar längre tid att bygga upp men ligger kvar. De går bra att kombinera: annonser i början och SEO på längre sikt." },
+      { "fraga": "Varför syns inte mitt företag på kartan?", "svar": "Ofta saknas en Google Företagsprofil, eller så är den halvfärdig. Adress, öppettider, kategori och bilder spelar roll. Det är ett bra ställe att börja om du vill synas lokalt." },
+      { "fraga": "Kan jag göra SEO själv?", "svar": "En hel del, ja. Fyll i din Företagsprofil, be nöjda kunder lämna omdömen och skriv en sida för varje tjänst du säljer. Vill du hellre lägga tiden på ditt eget jobb så tar vi hand om resten." },
+      { "fraga": "Jobbar ni bara med företag i Borås?", "svar": "Nej. De flesta av våra kunder finns i Västra Götaland, men vi tar uppdrag i hela Sverige. Borås har en speciell plats hos oss eftersom det var här vi startade." },
+      { "fraga": "Hur vet jag att det fungerar?", "svar": "Du ser det i siffror: hur många som hittar dig, vilka sökningar de kommer från och hur många som hör av sig. Mätningen kopplar vi upp från start." }
+    ]
+  },
+  "cta": {
+    "rubrik": "Ska vi kika på din sajt tillsammans?",
+    "text": "Hör av dig så bokar vi ett möte och går igenom hur ditt företag syns i Borås idag.",
+    "knapp": "Boka möte"
+  }
+}

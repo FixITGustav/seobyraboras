@@ -1,0 +1,61 @@
+---
+import site from '../content/installningar.json';
+import { telHref } from '../lib/content';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap grid">
+    <div>
+      <p class="f-logo">Fix IT<span class="logo-mark" aria-hidden="true"></span></p>
+      <p class="f-tag">{site.sidfot_text}</p>
+    </div>
+    <div>
+      <h2 class="f-h">Kontakt</h2>
+      <ul>
+        <li><a href={telHref(site.telefon)}>{site.telefon}</a></li>
+        <li><a href={`mailto:${site.epost}`}>{site.epost}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="f-h">Kontor</h2>
+      <address>{site.gatuadress}<br />{site.postnummer} {site.ort}</address>
+    </div>
+    <div>
+      <h2 class="f-h">Sidor</h2>
+      <ul>
+        <li><a href="/">SEO-byrå i Borås</a></li>
+        <li><a href="/om-oss/">Om oss</a></li>
+        <li><a href="/kontakt/">Kontakt</a></li>
+        <li><a href="https://fix-it.se">Fix IT Webbyrå</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap legal">
+    <span>© {year} {site.juridiskt_namn} · Org.nr {site.orgnr}</span>
+    <span class="hint" data-decor>Tips: tryck <kbd>R</kbd> för att se sidan som en sökmotor</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--navy-ink); color: #AEB3C6; padding: 72px 0 28px; font-size: .95rem; }
+  .grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px; }
+  .f-logo { display: inline-flex; align-items: baseline; gap: 2px; color: #fff; font-size: 1.7rem; margin: 0 0 .6em; line-height: 1; }
+  .logo-mark { width: 10px; height: 10px; background: var(--coral); clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+  .f-tag { max-width: 26em; }
+  .f-h { color: #fff; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 1em; font-weight: 650; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .4em; }
+  a { color: #E3E6EF; text-decoration: none; }
+  a:hover { color: var(--mint); }
+  address { font-style: normal; }
+  .legal {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px;
+    margin-top: 56px; padding-top: 22px; border-top: 1px solid #30364c; font-size: .82rem; color: #8a90a6;
+  }
+  kbd {
+    font-family: var(--mono); font-size: .8em; padding: 1px 6px; border-radius: 4px;
+    border: 1px solid #454c66; color: var(--mint);
+  }
+  @media (max-width: 820px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+  :global(html.robot) .site-footer { background: transparent; border-top: 1px dashed #343a52; }
+</style>

@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="Sidan finns inte | Fix IT Webbyrå"
+  description="Den här sidan finns inte. Gå tillbaka till startsidan för SEO-byrå i Borås, eller kontakta Fix IT Webbyrå."
+  path="/404/"
+>
+  <section class="nf">
+    <div class="wrap">
+      <p class="code" aria-hidden="true">#404</p>
+      <h1>Den här sidan rankar inte. Inte ens hos oss.</h1>
+      <p class="lead">Länken är trasig eller så har sidan flyttat. Trasiga länkar är för övrigt en av de första sakerna vi letar efter på kundernas sajter.</p>
+      <div class="btn-row">
+        <a class="btn" href="/">Till startsidan</a>
+        <a class="btn btn--ghost" href="/kontakt/">Kontakta oss</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { padding: clamp(64px, 12vw, 160px) 0; }
+  .code {
+    font-size: clamp(5rem, 18vw, 12rem); font-weight: 800; line-height: .9; margin: 0 0 .1em; letter-spacing: -.04em;
+    background: linear-gradient(120deg, var(--navy), var(--mint-dark) 70%, var(--coral));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  h1 { max-width: 14em; }
+  .lead { margin-bottom: 1.6em; }
+  :global(html.robot) .code { background: none; color: var(--coral); }
+</style>

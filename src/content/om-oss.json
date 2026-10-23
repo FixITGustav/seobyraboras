@@ -1,0 +1,66 @@
+{
+  "seo": {
+    "titel": "Om oss | Fix IT, SEO-byrå i Borås",
+    "beskrivning": "Fix IT är en liten webbyrå som startade i Borås 2020. Gustav sköter SEO och Google Ads, Mikael bygger hemsidorna. Läs vår historia och hur vi jobbar.",
+    "delningsbild": "",
+    "delningsbild_alt": ""
+  },
+  "hero": {
+    "overrubrik": "Om oss",
+    "h1": "Vi är Gustav och Mikael. Vi älskar småföretagare.",
+    "h1_markering": "Vi älskar småföretagare.",
+    "ingress": "Fix IT är en liten webbyrå med två delägare. Du pratar alltid direkt med någon av oss. Gustav tar hand om SEO och annonser, Mikael bygger hemsidorna."
+  },
+  "personer": [
+    {
+      "namn": "Gustav Ekman",
+      "roll": "Digital strategi, SEO och Google Ads",
+      "bild": "",
+      "bild_alt": "",
+      "fakta": [
+        { "etikett": "Gör", "text": "Strategi, sökmotoroptimering och annonser" },
+        { "etikett": "Pluggat", "text": "Master i ekonomi och magister i filosofi, Göteborgs universitet" },
+        { "etikett": "Träffar du när", "text": "Du vill synas bättre på Google" }
+      ]
+    },
+    {
+      "namn": "Mikael Hagren Sjölin",
+      "roll": "Bygger hemsidorna, fotar och filmar",
+      "bild": "",
+      "bild_alt": "",
+      "fakta": [
+        { "etikett": "Gör", "text": "Webbutveckling, foto och video" },
+        { "etikett": "Pluggat", "text": "Kandidat i webbutveckling, Högskolan i Borås" },
+        { "etikett": "Träffar du när", "text": "Din sajt ska byggas eller göras om" }
+      ]
+    }
+  ],
+  "historia": {
+    "overrubrik": "Vår historia",
+    "rubrik": "Sök i vår historia",
+    "ingress": "Klicka på ett förslag, skriv något eller bläddra med piltangenterna. Allt från första kameran till idag.",
+    "kapitel": [
+      { "sokfras": "fix it foto och film", "tid": "Före 2020", "rubrik": "Det började med en kamera", "text": "Innan Fix IT fanns drev Mikael en enskild firma med foto och video. Kameran har följt med hela vägen. Vi fotar och filmar fortfarande åt kunder." },
+      { "sokfras": "examen 2020", "tid": "2020", "rubrik": "Två examina samma år", "text": "Mikael blev klar med sin kandidat i webbutveckling på Högskolan i Borås. Samma år tog Gustav sin master i ekonomi och en magister i filosofi på Göteborgs universitet." },
+      { "sokfras": "es fix-it handelsbolag", "tid": "2020", "rubrik": "Ett handelsbolag med lite av allt", "text": "Vi startade ES Fix-IT Handelsbolag. Datorhjälp till privatpersoner, och webb, foto och video till företag." },
+      { "sokfras": "för många hemsidor", "tid": "2021", "rubrik": "Hemsidorna tog över", "text": "Efterfrågan på hemsidor växte snabbare än vi hade räknat med. Vi skalade bort datorhjälpen och satsade på webben. Foto och video fick stanna kvar." },
+      { "sokfras": "kontor i borås", "tid": "Sommaren 2021", "rubrik": "Första kontoret, mitt i Borås", "text": "Vi flyttade in på ett kontor centralt i Borås. Vårt första riktiga kontor, och en stad vi fortfarande har en speciell relation till." },
+      { "sokfras": "fix it webbyrå ab", "tid": "2022", "rubrik": "Aktiebolag och flytt västerut", "text": "Företaget blev aktiebolag och vi flyttade båda till Göteborg. Kontoret i Borås stängdes, och idag sitter vi på Johannefredsgatan i Mölndal." },
+      { "sokfras": "fix it idag", "tid": "Idag", "rubrik": "Hemsidor, SEO och annonser som drar in kunder", "text": "Vi är Google Partner och jobbar med hemsidor, SEO och Google Ads för småföretag, mest i Västra Götaland. Den här sajten finns för att Borås fortfarande betyder något för oss." }
+    ]
+  },
+  "varden": {
+    "overrubrik": "Så är vi att jobba med",
+    "rubrik": "Tre saker du kan räkna med",
+    "lista": [
+      { "rubrik": "Vi pratar som folk", "text": "Inget fackspråk. Vi förklarar hellre en gång till än att låta smarta." },
+      { "rubrik": "Du pratar med de som gör jobbet", "text": "Vi är två. Det är vi som svarar i telefon, och det är vi som gör jobbet." },
+      { "rubrik": "Priset innan vi börjar", "text": "Du får ett pris innan något drar igång, och Gustav går igenom det med dig rad för rad." }
+    ]
+  },
+  "cta": {
+    "rubrik": "Vill du träffa oss?",
+    "text": "Ring, mejla eller skicka ett meddelande. Det är någon av oss två som svarar.",
+    "knapp": "Kontakta oss"
+  }
+}

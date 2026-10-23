@@ -1,0 +1,24 @@
+{
+  "seo": {
+    "titel": "Kontakta oss | SEO i Borås | Fix IT Webbyrå",
+    "beskrivning": "Vill du synas bättre på Google i Borås? Skicka ett meddelande, ring 073-543 43 71 eller mejla info@fix-it.se så bokar vi ett möte.",
+    "delningsbild": "",
+    "delningsbild_alt": ""
+  },
+  "hero": {
+    "overrubrik": "Kontakt",
+    "h1": "Skriv ett brev till oss",
+    "h1_markering": "",
+    "ingress": "Fyll i luckorna så har du skrivit klart. Medan du skriver ser du hur ditt företag skulle kunna se ut i sökresultaten."
+  },
+  "brev": {
+    "halsning": "Hej Gustav!",
+    "knapp": "Skicka till Gustav",
+    "integritet": "Vi delar aldrig dina uppgifter. Läs mer i vår integritetspolicy."
+  },
+  "tack": {
+    "rubrik": "Tack! Brevet är på väg.",
+    "text": "Vi hör av oss så snart vi kan. Brådskar det? Ring 073-543 43 71."
+  },
+  "forhandsvisning": "Så här skulle ditt företag kunna se ut överst i sökresultaten. Det är dit vi siktar."
+}

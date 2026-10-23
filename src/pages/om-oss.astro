@@ -1,0 +1,301 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Highlight from '../components/Highlight.astro';
+import c from '../content/om-oss.json';
+import site from '../content/installningar.json';
+import { resolveImage, telHref } from '../lib/content';
+
+const people = c.personer.map((p) => ({ ...p, img: resolveImage(p.bild), init: p.namn.trim().charAt(0) }));
+const chapters = c.historia.kapitel;
+---
+<Base
+  title={c.seo.titel}
+  description={c.seo.beskrivning}
+  shareImage={c.seo.delningsbild}
+  shareImageAlt={c.seo.delningsbild_alt}
+  path="/om-oss/"
+>
+  <section class="about-hero">
+    <div class="wrap">
+      <p class="eyebrow">{c.hero.overrubrik}</p>
+      <h1><Highlight text={c.hero.h1} mark={c.hero.h1_markering} /></h1>
+      <p class="lead">{c.hero.ingress}</p>
+    </div>
+  </section>
+
+  <!-- PEOPLE as knowledge panels -->
+  <section class="section section--mist">
+    <div class="wrap">
+      <div class="people">
+        {people.map((p, i) => (
+          <article class="panel" data-reveal style={`transition-delay:${i * 120}ms`}>
+            <div class="panel-top">
+              <div class={`avatar${p.img ? ' has-photo' : ''}`}>
+                {p.img
+                  ? <Image src={p.img} alt={p.bild_alt || p.namn} width={160} height={160} fit="cover" class="photo" />
+                  : <span aria-hidden="true">{p.init}</span>}
+              </div>
+              <div>
+                <h2 class="p-name">{p.namn}</h2>
+                <p class="p-role">{p.roll}</p>
+              </div>
+            </div>
+            <dl class="facts">
+              {p.fakta.map((f) => (
+                <div><dt>{f.etikett}</dt><dd>{f.text}</dd></div>
+              ))}
+            </dl>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY as a search box -->
+  <section class="section">
+    <div class="wrap">
+      <div class="head" data-reveal>
+        <p class="eyebrow">{c.historia.overrubrik}</p>
+        <h2>{c.historia.rubrik}</h2>
+        <p class="lead">{c.historia.ingress}</p>
+      </div>
+
+      <div class="story" data-story>
+        <div class="searchbox" data-decor>
+          <label class="sb-field">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m15.5 15.5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="visually-hidden">Sök i vår historia</span>
+            <input type="text" autocomplete="off" spellcheck="false" placeholder="fix it ..." data-story-input
+              role="combobox" aria-expanded="true" aria-controls="story-list" aria-autocomplete="list" />
+          </label>
+          <ul class="suggest" id="story-list" role="listbox" data-story-list>
+            {chapters.map((ch, i) => (
+              <li role="option" id={`opt-${i}`} data-opt={i} aria-selected="false">
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 7v5l3 3"/><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                <span class="s-q">{ch.sokfras.toLowerCase()}</span>
+                <span class="s-y">{ch.tid}</span>
+              </li>
+            ))}
+            <li class="s-empty" data-story-empty hidden>Inga träffar. Prova "borås" eller "2020".</li>
+          </ul>
+        </div>
+
+        <div class="chapters" data-chapters>
+          {chapters.map((ch, i) => (
+            <article class="chapter" data-ch={i} aria-labelledby={`ch-${i}`}>
+              <p class="ch-year">{ch.tid}</p>
+              <h3 id={`ch-${i}`}>{ch.rubrik}</h3>
+              <p>{ch.text}</p>
+            </article>
+          ))}
+          <div class="ch-nav" data-decor>
+            <button type="button" class="ch-btn" data-prev aria-label="Föregående kapitel">←</button>
+            <div class="ch-dots" aria-hidden="true">
+              {chapters.map((_, i) => <span data-dot={i}></span>)}
+            </div>
+            <button type="button" class="ch-btn" data-next aria-label="Nästa kapitel">→</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="section section--mist">
+    <div class="wrap">
+      <div class="head" data-reveal>
+        <p class="eyebrow">{c.varden.overrubrik}</p>
+        <h2>{c.varden.rubrik}</h2>
+      </div>
+      <div class="values">
+        {c.varden.lista.map((v, i) => (
+          <div class="value" data-reveal style={`transition-delay:${i * 100}ms`}>
+            <span class="v-n" aria-hidden="true">{i + 1}</span>
+            <h3>{v.rubrik}</h3>
+            <p>{v.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--navy cta">
+    <div class="wrap cta-inner" data-reveal>
+      <h2>{c.cta.rubrik}</h2>
+      <p class="lead">{c.cta.text}</p>
+      <div class="btn-row">
+        <a class="btn btn--mint" href="/kontakt/">{c.cta.knapp}</a>
+        <a class="btn btn--ghost cta-ghost" href={telHref(site.telefon)}>{site.telefon}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .about-hero { padding: clamp(48px, 8vw, 104px) 0 clamp(40px, 6vw, 72px); }
+  .about-hero h1 { max-width: 16em; }
+  .head { max-width: 46em; margin-bottom: clamp(28px, 4vw, 48px); }
+
+  /* Knowledge panels */
+  .people { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .panel { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 28px; transition: box-shadow .35s var(--ease), transform .35s var(--ease), opacity .8s var(--ease); }
+  .panel:hover { box-shadow: var(--shadow-lift); transform: translateY(-4px); }
+  .panel-top { display: flex; align-items: center; gap: 18px; padding-bottom: 20px; border-bottom: 1px solid var(--line); margin-bottom: 18px; }
+  .avatar {
+    position: relative; width: 76px; height: 76px; border-radius: 50%; flex: none;
+    background: conic-gradient(from 210deg, var(--mint), var(--mint-dark), var(--navy), var(--coral), var(--mint));
+    padding: 3px;
+  }
+  .avatar :global(.photo) { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+  .avatar span {
+    display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%;
+    background: var(--navy); color: #fff; font-size: 1.9rem; font-weight: 300;
+  }
+  .panel:hover .avatar { animation: spin 3s linear infinite; }
+  .panel:hover .avatar span, .panel:hover .avatar :global(.photo) { animation: spin 3s linear infinite reverse; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .p-name { font-size: 1.4rem; margin: 0 0 .15em; }
+  .p-role { margin: 0; color: var(--muted); font-size: .95rem; }
+  .facts { margin: 0; display: grid; gap: 12px; }
+  .facts div { display: grid; grid-template-columns: 130px 1fr; gap: 12px; font-size: .96rem; }
+  .facts dt { color: var(--muted); font-weight: 600; }
+  .facts dd { margin: 0; color: var(--text); }
+
+  /* Story search */
+  .story { display: grid; grid-template-columns: .95fr 1.05fr; gap: clamp(24px, 5vw, 64px); align-items: start; }
+  .searchbox { background: #fff; border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); overflow: hidden; }
+  .sb-field { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--line); color: var(--muted); }
+  .sb-field input {
+    flex: 1; border: 0; outline: 0; font: 500 1.05rem var(--font); color: var(--navy); background: none; min-width: 0;
+  }
+  .suggest { list-style: none; margin: 0; padding: 8px 0; }
+  .suggest li[role='option'] {
+    display: flex; align-items: center; gap: 12px; padding: 11px 20px; cursor: pointer; color: var(--muted);
+    transition: background .2s;
+  }
+  .suggest li[role='option'] svg { flex: none; }
+  .suggest li[role='option']:hover { background: var(--mist); }
+  .suggest li[aria-selected='true'] { background: var(--mint-wash); color: var(--navy); }
+  .suggest li[aria-selected='true'] .s-q { font-weight: 650; }
+  .s-q { color: var(--navy); }
+  .s-q :global(b) { color: var(--mint-dark); }
+  .s-y { margin-left: auto; font-size: .8rem; color: var(--muted); white-space: nowrap; }
+  .s-empty { padding: 14px 20px; color: var(--muted); font-size: .92rem; }
+
+  .chapters { position: relative; min-height: 300px; }
+  .chapter { display: none; }
+  .chapter.is-active { display: block; animation: chIn .55s var(--ease); }
+  @keyframes chIn { from { opacity: 0; transform: translateY(14px); filter: blur(4px); } }
+  .ch-year {
+    font-size: clamp(3rem, 8vw, 5.5rem); font-weight: 800; line-height: 1; margin: 0 0 .2em; letter-spacing: -.03em;
+    background: linear-gradient(120deg, var(--navy) 30%, var(--mint-dark)); -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .chapter h3 { font-size: clamp(1.4rem, 2.6vw, 1.9rem); }
+  .chapter p:last-child { color: var(--muted); font-size: 1.08rem; max-width: 32em; }
+  .ch-nav { display: flex; align-items: center; gap: 14px; margin-top: 28px; }
+  .ch-btn {
+    width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: #fff;
+    font-size: 1.1rem; color: var(--navy); cursor: pointer; transition: border-color .2s, background .2s;
+  }
+  .ch-btn:hover { border-color: var(--navy); }
+  .ch-dots { display: flex; gap: 6px; }
+  .ch-dots span { width: 8px; height: 8px; border-radius: 4px; background: var(--line); transition: width .3s var(--ease), background .3s; }
+  .ch-dots span.on { width: 26px; background: var(--mint-dark); }
+
+  :global(.no-js) .chapter, :global(html.robot) .chapter { display: block; margin-bottom: 24px; }
+  :global(html.robot) .ch-year { background: none; color: var(--coral); font-size: 1.4rem; }
+  :global(html.robot) .story { grid-template-columns: 1fr; }
+
+  /* Values */
+  .values { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .value { background: #fff; border-radius: 14px; padding: 26px; border: 1px solid var(--line); }
+  .v-n { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--mint); color: var(--navy-ink); font-weight: 700; margin-bottom: 16px; }
+  .value p { color: var(--muted); margin: 0; }
+
+  .cta { text-align: center; }
+  .cta-inner { display: grid; justify-items: center; }
+  .cta .lead { margin-inline: auto; margin-bottom: 1.6em; }
+  .cta .btn-row { justify-content: center; }
+  .cta-ghost { --fg: #fff; --bd: #6b728c; }
+  .cta-ghost:hover { background: #fff; --fg: var(--navy); }
+
+  @media (max-width: 900px) {
+    .people, .story, .values { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .facts div { grid-template-columns: 1fr; gap: 0; }
+    .panel { padding: 22px; }
+  }
+  :global(html.robot) .panel, :global(html.robot) .value { background: transparent; border: 1px dashed #343a52; }
+  :global(html.robot) .avatar, :global(html.robot) .v-n { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .chapter.is-active { animation: none; }
+    .panel:hover .avatar, .panel:hover .avatar span, .panel:hover .avatar :global(.photo) { animation: none; }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-story]');
+  if (root) {
+    const input = root.querySelector<HTMLInputElement>('[data-story-input]')!;
+    const opts = [...root.querySelectorAll<HTMLLIElement>('[data-opt]')];
+    const chs = [...root.querySelectorAll<HTMLElement>('[data-ch]')];
+    const dots = [...root.querySelectorAll<HTMLElement>('[data-dot]')];
+    const empty = root.querySelector<HTMLElement>('[data-story-empty]')!;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const labels = opts.map((o) => o.querySelector('.s-q')!.textContent || '');
+    const years = opts.map((o) => (o.querySelector('.s-y')!.textContent || '').toLowerCase());
+    const bodies = chs.map((c) => (c.textContent || '').toLowerCase());
+    let current = 0;
+    let typing = 0;
+
+    const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]!));
+
+    function show(i: number, fill = true) {
+      current = (i + chs.length) % chs.length;
+      chs.forEach((c, k) => c.classList.toggle('is-active', k === current));
+      opts.forEach((o, k) => o.setAttribute('aria-selected', String(k === current)));
+      dots.forEach((d, k) => d.classList.toggle('on', k === current));
+      input.setAttribute('aria-activedescendant', `opt-${current}`);
+      if (fill) typeInto(labels[current]);
+    }
+
+    function typeInto(text: string) {
+      const id = ++typing;
+      if (reduce) { input.value = text; return; }
+      input.value = '';
+      [...text].forEach((ch, k) => setTimeout(() => { if (id === typing) input.value += ch; }, k * 26));
+    }
+
+    function filter() {
+      const q = input.value.trim().toLowerCase();
+      let firstMatch = -1, visible = 0;
+      opts.forEach((o, k) => {
+        const hit = !q || labels[k].includes(q) || years[k].includes(q) || bodies[k].includes(q);
+        o.hidden = !hit;
+        const qEl = o.querySelector('.s-q')!;
+        const i = q ? labels[k].indexOf(q) : -1;
+        qEl.innerHTML = i >= 0 ? esc(labels[k].slice(0, i)) + '<b>' + esc(labels[k].slice(i, i + q.length)) + '</b>' + esc(labels[k].slice(i + q.length)) : esc(labels[k]);
+        if (hit) { visible++; if (firstMatch < 0) firstMatch = k; }
+      });
+      empty.hidden = visible > 0;
+      if (firstMatch >= 0 && q) show(firstMatch, false);
+    }
+
+    input.addEventListener('input', () => { typing++; filter(); });
+    input.addEventListener('keydown', (e) => {
+      const visibleIdx = opts.map((o, k) => (o.hidden ? -1 : k)).filter((k) => k >= 0);
+      const pos = visibleIdx.indexOf(current);
+      if (e.key === 'ArrowDown') { e.preventDefault(); show(visibleIdx[(pos + 1) % visibleIdx.length] ?? 0, false); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); show(visibleIdx[(pos - 1 + visibleIdx.length) % visibleIdx.length] ?? 0, false); }
+      if (e.key === 'Enter') { e.preventDefault(); show(current); opts.forEach((o) => (o.hidden = false)); filter(); }
+    });
+    opts.forEach((o, k) => o.addEventListener('click', () => { opts.forEach((x) => (x.hidden = false)); empty.hidden = true; show(k); }));
+    root.querySelector('[data-prev]')?.addEventListener('click', () => show(current - 1));
+    root.querySelector('[data-next]')?.addEventListener('click', () => show(current + 1));
+
+    show(0, false);
+    input.value = labels[0];
+  }
+</script>

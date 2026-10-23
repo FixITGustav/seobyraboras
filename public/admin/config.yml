@@ -1,0 +1,284 @@
+# Decap CMS: the admin at /admin. Every save becomes a commit on GitHub,
+# and Cloudflare Pages rebuilds the site automatically a minute later.
+
+backend:
+  name: github
+  repo: DITT-GITHUB-NAMN/seobyraboras   # <- byt till ditt GitHub-namn
+  branch: main
+  base_url: https://seobyraboras.se
+  auth_endpoint: api/auth
+  commit_messages:
+    update: "Uppdatera {{collection}} \"{{slug}}\" via CMS"
+    uploadMedia: "Ladda upp \"{{path}}\""
+    deleteMedia: "Ta bort \"{{path}}\""
+
+# Lets you edit on your own computer without logging in (npm run cms + npm run dev)
+local_backend: true
+
+locale: sv
+site_url: https://seobyraboras.se
+display_url: https://seobyraboras.se
+
+# Images go into src/assets so Astro can optimize them (WebP, right sizes)
+media_folder: src/assets/uploads
+public_folder: /src/assets/uploads
+
+collections:
+  # ---------- Pages ----------
+  - name: "sidor"
+    label: "Sidor"
+    format: "json"
+    editor:
+      preview: false
+    files:
+      - name: "hem"
+        label: "Startsidan"
+        file: "src/content/hem.json"
+        fields:
+          - &seo
+            label: "SEO"
+            name: "seo"
+            widget: "object"
+            collapsed: false
+            fields:
+              - label: "Title-tagg"
+                name: "titel"
+                widget: "string"
+                hint: "Det som visas som blå rubrik i Googles sökresultat. Håll den under 60 tecken."
+                pattern: ['^.{10,60}$', "Mellan 10 och 60 tecken"]
+              - label: "Metabeskrivning"
+                name: "beskrivning"
+                widget: "text"
+                hint: "Den grå texten under rubriken i sökresultatet. Sikta på 120 till 160 tecken."
+                pattern: ['^[\s\S]{50,160}$', "Mellan 50 och 160 tecken"]
+              - label: "Delningsbild"
+                name: "delningsbild"
+                widget: "image"
+                required: false
+                choose_url: false
+                hint: "Visas när sidan delas på Facebook, LinkedIn eller i Slack. Helst 1200 × 630 pixlar. Lämna tom för att använda sajtens standardbild."
+              - label: "Alt-text för delningsbilden"
+                name: "delningsbild_alt"
+                widget: "string"
+                required: false
+          - label: "Toppen av sidan"
+            name: "hero"
+            widget: "object"
+            fields:
+              - label: "Överrubrik"
+                name: "overrubrik"
+                widget: "string"
+              - label: "H1-rubrik"
+                name: "h1"
+                widget: "string"
+                hint: "Sidans huvudrubrik. Bara en per sida, och gärna med sökordet i."
+              - label: "Markerad del av H1"
+                name: "h1_markering"
+                widget: "string"
+                required: false
+                hint: "Exakt den del av rubriken som ska få den gröna markeringen."
+              - { label: "Ingress", name: "ingress", widget: "text" }
+              - { label: "Knapptext", name: "knapp", widget: "string" }
+              - label: "Förtroendepunkter"
+                name: "fortroende"
+                widget: "list"
+                summary: "{{fields.rubrik}}"
+                fields:
+                  - { label: "Rubrik", name: "rubrik", widget: "string" }
+                  - { label: "Undertext", name: "text", widget: "string" }
+          - label: "Tjänster"
+            name: "tjanster"
+            widget: "object"
+            fields:
+              - { label: "Överrubrik", name: "overrubrik", widget: "string" }
+              - { label: "Rubrik (H2)", name: "rubrik", widget: "string" }
+              - { label: "Ingress", name: "ingress", widget: "text" }
+              - label: "Tjänstekort"
+                name: "lista"
+                widget: "list"
+                summary: "{{fields.rubrik}}"
+                fields:
+                  - { label: "Rubrik (H3)", name: "rubrik", widget: "string" }
+                  - { label: "Text", name: "text", widget: "text" }
+                  - { label: "Typisk sökning", name: "sokning", widget: "string", required: false, hint: "Visas längst ned på kortet." }
+          - label: "Robotläget"
+            name: "robot"
+            widget: "object"
+            fields:
+              - { label: "Överrubrik", name: "overrubrik", widget: "string" }
+              - { label: "Rubrik (H2)", name: "rubrik", widget: "string" }
+              - { label: "Text", name: "text", widget: "text" }
+              - { label: "Knapptext", name: "knapp", widget: "string" }
+          - label: "Så går det till"
+            name: "process"
+            widget: "object"
+            fields:
+              - { label: "Överrubrik", name: "overrubrik", widget: "string" }
+              - { label: "Rubrik (H2)", name: "rubrik", widget: "string" }
+              - { label: "Ingress", name: "ingress", widget: "text" }
+              - label: "Steg"
+                name: "steg"
+                widget: "list"
+                max: 4
+                summary: "{{fields.rubrik}}"
+                fields:
+                  - { label: "Rubrik (H3)", name: "rubrik", widget: "string" }
+                  - { label: "Text", name: "text", widget: "text" }
+          - label: "Borås-sektionen"
+            name: "boras"
+            widget: "object"
+            fields:
+              - { label: "Överrubrik", name: "overrubrik", widget: "string" }
+              - { label: "Rubrik (H2)", name: "rubrik", widget: "string" }
+              - { label: "Text", name: "text", widget: "text", hint: "Lämna en tom rad mellan stycken." }
+              - { label: "Bild", name: "bild", widget: "image", required: false, choose_url: false, hint: "Visas ovanför kartan. Liggande format fungerar bäst." }
+              - { label: "Alt-text för bilden", name: "bild_alt", widget: "string", required: false, hint: "Beskriv vad bilden visar. Viktigt för SEO och tillgänglighet." }
+          - label: "Vanliga frågor"
+            name: "faq"
+            widget: "object"
+            fields:
+              - { label: "Överrubrik", name: "overrubrik", widget: "string" }
+              - { label: "Rubrik (H2)", name: "rubrik", widget: "string" }
+              - { label: "Ingress", name: "ingress", widget: "text" }
+              - label: "Frågor"
+                name: "fragor"
+                widget: "list"
+                summary: "{{fields.fraga}}"
+                hint: "De fyra första visas direkt. Resten dyker upp när besökaren öppnar en fråga."
+                fields:
+                  - { label: "Fråga", name: "fraga", widget: "string" }
+                  - { label: "Svar", name: "svar", widget: "text" }
+          - label: "Avslutning"
+            name: "cta"
+            widget: "object"
+            fields:
+              - { label: "Rubrik (H2)", name: "rubrik", widget: "string" }
+              - { label: "Text", name: "text", widget: "text" }
+              - { label: "Knapptext", name: "knapp", widget: "string" }
+
+      - name: "om-oss"
+        label: "Om oss"
+        file: "src/content/om-oss.json"
+        fields:
+          - *seo
+          - label: "Toppen av sidan"
+            name: "hero"
+            widget: "object"
+            fields: &hero
+              - label: "Överrubrik"
+                name: "overrubrik"
+                widget: "string"
+                hint: "Den lilla gröna texten ovanför H1."
+              - label: "H1-rubrik"
+                name: "h1"
+                widget: "string"
+                hint: "Sidans huvudrubrik. Bara en per sida, och gärna med sökordet i."
+              - label: "Markerad del av H1"
+                name: "h1_markering"
+                widget: "string"
+                required: false
+                hint: "Skriv exakt den del av rubriken som ska få den gröna markeringen. Lämna tom för ingen markering."
+              - label: "Ingress"
+                name: "ingress"
+                widget: "text"
+          - label: "Personer"
+            name: "personer"
+            widget: "list"
+            summary: "{{fields.namn}}"
+            fields:
+              - { label: "Namn", name: "namn", widget: "string" }
+              - { label: "Roll", name: "roll", widget: "string" }
+              - { label: "Porträtt", name: "bild", widget: "image", required: false, choose_url: false, hint: "Kvadratisk bild fungerar bäst. Utan bild visas första bokstaven i namnet." }
+              - { label: "Alt-text för porträttet", name: "bild_alt", widget: "string", required: false }
+              - label: "Fakta"
+                name: "fakta"
+                widget: "list"
+                summary: "{{fields.etikett}}: {{fields.text}}"
+                fields:
+                  - { label: "Etikett", name: "etikett", widget: "string" }
+                  - { label: "Text", name: "text", widget: "string" }
+          - label: "Historien"
+            name: "historia"
+            widget: "object"
+            fields:
+              - { label: "Överrubrik", name: "overrubrik", widget: "string" }
+              - { label: "Rubrik (H2)", name: "rubrik", widget: "string" }
+              - { label: "Ingress", name: "ingress", widget: "text" }
+              - label: "Kapitel"
+                name: "kapitel"
+                widget: "list"
+                summary: "{{fields.tid}}: {{fields.rubrik}}"
+                fields:
+                  - { label: "Sökfras", name: "sokfras", widget: "string", hint: "Det som visas som förslag i sökrutan, gärna med små bokstäver." }
+                  - { label: "Tid", name: "tid", widget: "string", hint: "Till exempel 2021 eller Sommaren 2021." }
+                  - { label: "Rubrik (H3)", name: "rubrik", widget: "string" }
+                  - { label: "Text", name: "text", widget: "text" }
+          - label: "Så är vi att jobba med"
+            name: "varden"
+            widget: "object"
+            fields:
+              - { label: "Överrubrik", name: "overrubrik", widget: "string" }
+              - { label: "Rubrik (H2)", name: "rubrik", widget: "string" }
+              - label: "Punkter"
+                name: "lista"
+                widget: "list"
+                summary: "{{fields.rubrik}}"
+                fields:
+                  - { label: "Rubrik (H3)", name: "rubrik", widget: "string" }
+                  - { label: "Text", name: "text", widget: "text" }
+          - label: "Avslutning"
+            name: "cta"
+            widget: "object"
+            fields:
+              - { label: "Rubrik (H2)", name: "rubrik", widget: "string" }
+              - { label: "Text", name: "text", widget: "text" }
+              - { label: "Knapptext", name: "knapp", widget: "string" }
+
+      - name: "kontakt"
+        label: "Kontakt"
+        file: "src/content/kontakt.json"
+        fields:
+          - *seo
+          - label: "Toppen av sidan"
+            name: "hero"
+            widget: "object"
+            fields: *hero
+          - label: "Brevet"
+            name: "brev"
+            widget: "object"
+            fields:
+              - { label: "Hälsning", name: "halsning", widget: "string" }
+              - { label: "Knapptext", name: "knapp", widget: "string" }
+              - { label: "Integritetstext", name: "integritet", widget: "string", hint: "Ordet integritetspolicy blir automatiskt en länk." }
+          - label: "Tack-meddelandet"
+            name: "tack"
+            widget: "object"
+            fields:
+              - { label: "Rubrik", name: "rubrik", widget: "string" }
+              - { label: "Text", name: "text", widget: "text" }
+          - { label: "Text under förhandsvisningen", name: "forhandsvisning", widget: "text" }
+
+  # ---------- Site-wide settings ----------
+  - name: "installningar"
+    label: "Inställningar"
+    format: "json"
+    editor:
+      preview: false
+    files:
+      - name: "installningar"
+        label: "Företagsuppgifter och standardbild"
+        file: "src/content/installningar.json"
+        fields:
+          - { label: "Företagsnamn", name: "foretag", widget: "string" }
+          - { label: "Juridiskt namn", name: "juridiskt_namn", widget: "string" }
+          - { label: "Organisationsnummer", name: "orgnr", widget: "string" }
+          - { label: "Telefon", name: "telefon", widget: "string", hint: "Skriv som det ska visas, till exempel 073-543 43 71." }
+          - { label: "E-post", name: "epost", widget: "string" }
+          - { label: "Gatuadress", name: "gatuadress", widget: "string" }
+          - { label: "Postnummer", name: "postnummer", widget: "string" }
+          - { label: "Ort", name: "ort", widget: "string" }
+          - { label: "Text bredvid loggan", name: "logo_undertext", widget: "string", required: false }
+          - { label: "Text i sidfoten", name: "sidfot_text", widget: "text" }
+          - { label: "Länk till integritetspolicy", name: "integritetspolicy", widget: "string" }
+          - { label: "Standardbild vid delning", name: "delningsbild", widget: "image", required: false, choose_url: false, hint: "Används på sidor som saknar egen delningsbild. Helst 1200 × 630 pixlar." }
+          - { label: "Alt-text för standardbilden", name: "delningsbild_alt", widget: "string", required: false }

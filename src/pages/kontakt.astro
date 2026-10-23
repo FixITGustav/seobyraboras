@@ -1,0 +1,333 @@
+---
+import Base from '../layouts/Base.astro';
+import Highlight from '../components/Highlight.astro';
+import c from '../content/kontakt.json';
+import site from '../content/installningar.json';
+import { telHref } from '../lib/content';
+// Where the form posts. Set PUBLIC_FORM_ENDPOINT in Cloudflare Pages (for example a
+// Formspree or Web3Forms URL). Without it the form opens the visitor's mail app instead.
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT || '';
+// The word "integritetspolicy" in the privacy line becomes a link to the policy
+const [privBefore, privAfter] = c.brev.integritet.includes('integritetspolicy')
+  ? c.brev.integritet.split(/integritetspolicy(.*)/s)
+  : [c.brev.integritet, null];
+---
+<Base
+  title={c.seo.titel}
+  description={c.seo.beskrivning}
+  shareImage={c.seo.delningsbild}
+  shareImageAlt={c.seo.delningsbild_alt}
+  path="/kontakt/"
+>
+  <section class="contact-hero">
+    <div class="wrap">
+      <p class="eyebrow">{c.hero.overrubrik}</p>
+      <h1><Highlight text={c.hero.h1} mark={c.hero.h1_markering} /></h1>
+      <p class="lead">{c.hero.ingress}</p>
+    </div>
+  </section>
+
+  <section class="section contact-main">
+    <div class="wrap layout">
+      <form class="letter" data-letter data-endpoint={endpoint} data-email={site.epost} data-phone={site.telefon} data-greeting={c.brev.halsning} novalidate>
+        <div class="paper">
+          <p class="greet">{c.brev.halsning}</p>
+
+          <p class="line">
+            Jag heter
+            <label class="blank"><span class="visually-hidden">Ditt namn</span>
+              <input name="namn" required autocomplete="name" placeholder="ditt namn" data-fill="name" /></label>
+            och driver
+            <label class="blank"><span class="visually-hidden">Företagets namn</span>
+              <input name="foretag" required autocomplete="organization" placeholder="företagets namn" data-fill="company" /></label>
+            i
+            <label class="blank"><span class="visually-hidden">Ort</span>
+              <input name="ort" required value="Borås" placeholder="ort" data-fill="city" /></label>.
+          </p>
+
+          <p class="line">
+            Vi vill synas när någon söker på
+            <label class="blank"><span class="visually-hidden">Vad ni vill synas på</span>
+              <input name="sokord" required placeholder="vad ni gör, typ takläggare" data-fill="kw" /></label>.
+          </p>
+
+          <p class="line">
+            Just nu
+            <label class="blank sel"><span class="visually-hidden">Har ni en hemsida?</span>
+              <select name="hemsida" data-fill="site">
+                <option>har vi en hemsida</option>
+                <option>har vi ingen hemsida än</option>
+                <option>vet jag inte riktigt hur det står till</option>
+              </select></label>.
+          </p>
+
+          <p class="line">
+            Nå mig på
+            <label class="blank"><span class="visually-hidden">E-post eller telefon</span>
+              <input name="kontakt" required placeholder="e-post eller telefon" data-fill="reach" /></label>.
+          </p>
+
+          <label class="more">
+            <span class="more-label">Något mer du vill berätta? (frivilligt)</span>
+            <textarea name="meddelande" rows="3" placeholder="Till exempel vad som funkar dåligt idag, eller när det passar att ses."></textarea>
+          </label>
+
+          <p class="sign">Hälsningar,<br /><span data-echo-name class="sig">ditt namn</span></p>
+
+          <label class="hp" aria-hidden="true">Lämna tomt <input name="webbplats" tabindex="-1" autocomplete="off" /></label>
+
+          <div class="send-row">
+            <button class="btn" type="submit" data-send>{c.brev.knapp}</button>
+            <p class="status" data-status role="status"></p>
+          </div>
+          <p class="privacy">{privBefore}{privAfter !== null && <><a href={site.integritetspolicy}>integritetspolicy</a>{privAfter}</>}</p>
+        </div>
+
+        <div class="thanks" data-thanks tabindex="-1">
+          <div class="env" aria-hidden="true"><span class="flap"></span></div>
+          <h2>{c.tack.rubrik}</h2>
+          <p data-thanks-text>{c.tack.text}</p>
+        </div>
+      </form>
+
+      <aside class="side">
+        <div class="preview" aria-live="polite" data-decor>
+          <p class="pv-label">Förhandsvisning</p>
+          <div class="pv-card" data-pv>
+            <div class="pv-top">
+              <span class="pv-fav" aria-hidden="true" data-pv-fav>?</span>
+              <span class="pv-url"><span data-pv-domain>dittforetag.se</span><small>https://<span data-pv-domain2>dittforetag.se</span></small></span>
+              <span class="pv-rank" data-pv-rank>#1</span>
+            </div>
+            <p class="pv-title" data-pv-title>Takläggare i Borås | Ditt företag</p>
+            <p class="pv-desc" data-pv-desc>Ditt företag hjälper dig med takläggare i Borås. Ring oss eller boka direkt på hemsidan.</p>
+          </div>
+          <p class="pv-note">{c.forhandsvisning}</p>
+        </div>
+
+        <div class="tiles">
+          <a class="tile" href={telHref(site.telefon)}>
+            <span class="t-k">Ring</span><span class="t-v">{site.telefon}</span>
+          </a>
+          <a class="tile" href={`mailto:${site.epost}`}>
+            <span class="t-k">Mejla</span><span class="t-v">{site.epost}</span>
+          </a>
+          <div class="tile">
+            <span class="t-k">Kontor</span><span class="t-v">{site.gatuadress}, {site.postnummer} {site.ort}</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact-hero { padding: clamp(48px, 8vw, 96px) 0 0; }
+  .contact-main { padding-top: clamp(32px, 5vw, 56px); }
+  .layout { display: grid; grid-template-columns: 1.25fr .75fr; gap: clamp(28px, 5vw, 64px); align-items: start; }
+
+  /* The letter */
+  .letter { position: relative; perspective: 1400px; }
+  .paper {
+    position: relative; background: #fff; border-radius: 6px 6px 18px 18px; padding: clamp(28px, 5vw, 56px);
+    box-shadow: var(--shadow-lift); border: 1px solid var(--line);
+    transform-origin: top center; transition: transform .8s var(--ease), opacity .6s .2s;
+    font-size: clamp(1.1rem, 1.8vw, 1.3rem); line-height: 2.2;
+  }
+  .paper::before {
+    content: ''; position: absolute; left: 0; right: 0; top: 0; height: 6px; border-radius: 6px 6px 0 0;
+    background: linear-gradient(90deg, var(--mint), var(--mint-dark) 60%, var(--coral));
+  }
+  .greet { font-size: 1.15em; font-weight: 650; color: var(--navy); margin-bottom: .4em; }
+  .line { margin: 0 0 .5em; color: var(--text); }
+  .blank { display: inline-block; position: relative; vertical-align: baseline; }
+  .blank input, .blank select {
+    font: 600 1em/1.3 var(--font); color: var(--navy);
+    border: 0; border-bottom: 2px dashed #bfc4d1; background: transparent;
+    padding: 0 4px 2px; margin: 0 2px; border-radius: 0;
+    field-sizing: content; min-width: 6ch; max-width: 100%;
+    transition: border-color .25s, background .25s;
+  }
+  .blank select { appearance: none; cursor: pointer; padding-right: 22px;
+    background-image: linear-gradient(45deg, transparent 50%, var(--navy) 50%), linear-gradient(135deg, var(--navy) 50%, transparent 50%);
+    background-position: calc(100% - 10px) 55%, calc(100% - 5px) 55%; background-size: 5px 5px; background-repeat: no-repeat; }
+  .blank input::placeholder { color: #a3a9ba; font-weight: 500; }
+  .blank input:focus, .blank select:focus { outline: 0; border-bottom-style: solid; border-color: var(--mint-dark); background: var(--mint-wash); }
+  .blank input:not(:placeholder-shown):valid { border-bottom-style: solid; border-color: var(--mint); }
+  .blank.shake { animation: shake .45s; }
+  .blank.shake input { border-color: var(--coral); background: var(--coral-wash); }
+  @keyframes shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+
+  .more { display: block; margin: 1.2em 0 .6em; line-height: 1.5; }
+  .more-label { display: block; font-size: .72em; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+  .more textarea {
+    width: 100%; font: 400 .82em/1.6 var(--font); color: var(--text); resize: vertical;
+    border: 1.5px solid var(--line); border-radius: 10px; padding: 12px 14px; background: #fff;
+  }
+  .more textarea:focus { outline: 0; border-color: var(--mint-dark); box-shadow: 0 0 0 4px rgba(15, 233, 173, .18); }
+  .sign { margin: .8em 0 1em; line-height: 1.5; color: var(--muted); }
+  .sig { display: inline-block; margin-top: 6px; font-size: 1.35em; font-style: italic; font-weight: 500; color: var(--navy); letter-spacing: .01em; }
+  .hp { position: absolute; left: -9999px; }
+  .send-row { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; line-height: 1.4; }
+  .status { margin: 0; font-size: .7em; color: var(--muted); }
+  .status.err { color: #c43d4b; }
+  .privacy { margin: 1em 0 0; font-size: .62em; line-height: 1.5; color: var(--muted); }
+
+  /* Sent state: the letter folds away into an envelope */
+  .thanks {
+    position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; text-align: center;
+    padding: 32px; opacity: 0; pointer-events: none; transition: opacity .5s .55s;
+  }
+  .thanks h2 { margin-top: 24px; }
+  .thanks p { color: var(--muted); max-width: 28em; }
+  .letter.sent .paper { transform: rotateX(78deg) translateY(40px) scale(.6); opacity: 0; }
+  .letter.sent .thanks { opacity: 1; pointer-events: auto; }
+  .env { position: relative; width: 120px; height: 78px; border-radius: 8px; background: var(--navy); overflow: hidden; }
+  .flap {
+    position: absolute; left: 0; right: 0; top: 0; height: 100%;
+    background: var(--mint-dark); clip-path: polygon(0 0, 100% 0, 50% 58%);
+    transform-origin: top; transform: rotateX(180deg); transition: transform .5s .9s var(--ease);
+  }
+  .letter.sent .flap { transform: rotateX(0); }
+
+  /* Live SERP preview */
+  .side { display: grid; gap: 20px; position: sticky; top: 96px; }
+  .preview { background: var(--mist); border-radius: 18px; padding: 20px; }
+  .pv-label { margin: 0 0 12px; font-size: .78rem; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .pv-card { background: #fff; border-radius: 12px; padding: 16px 18px; box-shadow: var(--shadow); transition: transform .4s var(--ease); }
+  .pv-card.bump { animation: bump .5s var(--ease); }
+  @keyframes bump { 40% { transform: translateY(-4px) scale(1.015); } }
+  .pv-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .pv-fav { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--navy); color: #fff; font-size: .8rem; font-weight: 700; flex: none; }
+  .pv-url { display: grid; line-height: 1.25; font-size: .85rem; color: var(--text); min-width: 0; overflow: hidden; }
+  .pv-url small { color: var(--muted); font-size: .75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pv-rank { margin-left: auto; font-size: .78rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: var(--mint); color: var(--navy-ink); opacity: .35; transition: opacity .4s, transform .4s var(--ease); }
+  .pv-card.complete .pv-rank { opacity: 1; transform: scale(1.1); }
+  .pv-title { margin: 0 0 4px; font-size: 1.12rem; line-height: 1.3; color: #1a0dab; font-weight: 500; }
+  .pv-desc { margin: 0; font-size: .88rem; line-height: 1.5; color: var(--muted); }
+  .pv-note { margin: 14px 2px 0; font-size: .85rem; color: var(--muted); }
+
+  .tiles { display: grid; gap: 10px; }
+  .tile {
+    display: grid; gap: 2px; padding: 16px 18px; border-radius: 14px; border: 1px solid var(--line);
+    text-decoration: none; color: var(--navy); transition: border-color .2s, transform .25s var(--ease), box-shadow .25s;
+  }
+  a.tile:hover { border-color: var(--mint); transform: translateX(4px); box-shadow: var(--shadow); color: var(--navy); }
+  .t-k { font-size: .78rem; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .t-v { font-weight: 600; }
+
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; }
+    .side { position: static; }
+  }
+  @media (max-width: 480px) {
+    .paper { line-height: 2; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .paper, .thanks, .flap { transition: none; }
+    .blank.shake, .pv-card.bump { animation: none; }
+  }
+
+  :global(html.robot) .paper { background: transparent; box-shadow: none; border: 1px dashed #343a52; color: #B9BED0; }
+  :global(html.robot) .paper::before { display: none; }
+  :global(html.robot) .greet, :global(html.robot) .sig { color: #fff; }
+  :global(html.robot) .blank input, :global(html.robot) .blank select, :global(html.robot) .more textarea {
+    color: var(--mint); font-family: var(--mono); border-color: #4a5170; background: transparent;
+  }
+  :global(html.robot) .tile { border-style: dashed; border-color: #343a52; color: #fff; }
+  :global(html.robot) .t-v { color: var(--mint); }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-letter]');
+  if (form) {
+    const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector<T>(s)!;
+    const f = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
+    const pv = $('[data-pv]');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Fallback auto-width for browsers without field-sizing: content
+    const supportsSizing = CSS.supports('field-sizing', 'content');
+    const fit = (el: HTMLInputElement) => {
+      if (supportsSizing) return;
+      const len = Math.max(el.value.length, el.placeholder.length, 4);
+      el.style.width = `${len + 1.5}ch`;
+    };
+    form.querySelectorAll<HTMLInputElement>('.blank input').forEach((el) => {
+      fit(el);
+      el.addEventListener('input', () => { fit(el); el.closest('.blank')?.classList.remove('shake'); });
+    });
+
+    const slug = (s: string) => s.toLowerCase().trim()
+      .replace(/[åä]/g, 'a').replace(/ö/g, 'o').replace(/é/g, 'e')
+      .replace(/&/g, 'och').replace(/\b(ab|hb|kb)\b/g, '').replace(/[^a-z0-9]+/g, '').slice(0, 28);
+    const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+    let lastTitle = '';
+    function render() {
+      const company = f('foretag').value.trim();
+      const city = f('ort').value.trim() || 'Borås';
+      const kw = f('sokord').value.trim().replace(/^(typ|t\.ex\.?)\s+/i, '');
+      const name = f('namn').value.trim();
+      const domain = `${slug(company) || 'dittforetag'}.se`;
+      const title = `${cap(kw || 'takläggare')} i ${city} | ${company || 'Ditt företag'}`;
+      $('[data-pv-domain]').textContent = domain;
+      $('[data-pv-domain2]').textContent = domain;
+      $('[data-pv-fav]').textContent = (company || '?').charAt(0).toUpperCase();
+      $('[data-pv-title]').textContent = title.length > 62 ? title.slice(0, 59) + '...' : title;
+      $('[data-pv-desc]').textContent =
+        `${company || 'Ditt företag'} hjälper dig med ${(kw || 'takläggare').toLowerCase()} i ${city}. Ring oss eller boka direkt på hemsidan.`;
+      $('[data-echo-name]').textContent = name || 'ditt namn';
+      pv.classList.toggle('complete', !!(company && kw));
+      if (title !== lastTitle && !reduce) { pv.classList.remove('bump'); void pv.offsetWidth; pv.classList.add('bump'); }
+      lastTitle = title;
+    }
+    form.addEventListener('input', render);
+    render();
+
+    const status = $('[data-status]');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = ''; status.classList.remove('err');
+      if (f('webbplats').value) return; // bot
+
+      const missing = [...form.querySelectorAll<HTMLInputElement>('.blank input[required]')].filter((el) => !el.value.trim());
+      if (missing.length) {
+        missing.forEach((el) => { const b = el.closest('.blank')!; b.classList.remove('shake'); void (b as HTMLElement).offsetWidth; b.classList.add('shake'); });
+        missing[0].focus();
+        status.textContent = 'Fyll i luckorna som blinkar, så är brevet klart.';
+        status.classList.add('err');
+        return;
+      }
+
+      const data = new FormData(form);
+      data.delete('webbplats');
+      const text =
+        `${form.dataset.greeting}\n\nJag heter ${data.get('namn')} och driver ${data.get('foretag')} i ${data.get('ort')}.\n` +
+        `Vi vill synas när någon söker på ${data.get('sokord')}.\nJust nu ${data.get('hemsida')}.\n` +
+        `Nå mig på ${data.get('kontakt')}.\n\n${data.get('meddelande') || ''}\n\nHälsningar,\n${data.get('namn')}`;
+
+      const endpoint = form.dataset.endpoint;
+      const send = $<HTMLButtonElement>('[data-send]');
+      if (endpoint) {
+        send.disabled = true; status.textContent = 'Skickar...';
+        try {
+          data.append('_subject', `SEO Borås: ${data.get('foretag')}`);
+          data.append('brev', text);
+          const res = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+          if (!res.ok) throw new Error(String(res.status));
+          form.classList.add('sent');
+          $<HTMLElement>('[data-thanks]').focus();
+        } catch {
+          status.textContent = `Något gick snett. Ring ${form.dataset.phone} eller mejla ${form.dataset.email} istället.`;
+          status.classList.add('err');
+        } finally { send.disabled = false; }
+      } else {
+        const subject = encodeURIComponent(`SEO Borås: ${data.get('foretag')}`);
+        location.href = `mailto:${form.dataset.email}?subject=${subject}&body=${encodeURIComponent(text)}`;
+        $('[data-thanks-text]').textContent = 'Ditt mejlprogram öppnas med brevet ifyllt. Tryck på skicka där, så är det klart.';
+        form.classList.add('sent');
+      }
+    });
+  }
+</script>

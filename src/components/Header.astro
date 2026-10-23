@@ -1,0 +1,129 @@
+---
+import site from '../content/installningar.json';
+import { telHref } from '../lib/content';
+const { path = '/' } = Astro.props;
+const links = [
+  { href: '/', label: 'Hem' },
+  { href: '/om-oss/', label: 'Om oss' },
+  { href: '/kontakt/', label: 'Kontakt' },
+];
+---
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="logo" href="/" aria-label="Fix IT Webbyrå, till startsidan">
+      <span class="logo-word">Fix IT</span><span class="logo-mark" aria-hidden="true"></span>
+      {site.logo_undertext && <span class="logo-sub" data-decor>{site.logo_undertext}</span>}
+    </a>
+
+    <nav class="nav" aria-label="Huvudmeny">
+      {links.map((l) => (
+        <a href={l.href} aria-current={path === l.href ? 'page' : undefined}>{l.label}</a>
+      ))}
+    </nav>
+
+    <div class="tools">
+      <button class="robot-toggle" type="button" aria-pressed="false" data-robot-toggle
+        title="Se sidan som en sökmotor ser den (kortkommando: R)">
+        <span class="eye" aria-hidden="true">
+          <span class="lid"></span><span class="pupil"></span>
+        </span>
+        <span class="robot-label"><span class="when-human">Robotläge</span><span class="when-robot">Människoläge</span></span>
+      </button>
+      <a class="btn btn--ghost phone" href={telHref(site.telefon)}>
+        <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.3 0 .7-.2 1z"/></svg>
+        <span>{site.telefon}</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255, 255, 255, .88);
+    backdrop-filter: saturate(1.4) blur(12px);
+    -webkit-backdrop-filter: saturate(1.4) blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar { display: flex; align-items: center; gap: 24px; min-height: 72px; }
+
+  .logo { display: inline-flex; align-items: baseline; gap: 2px; text-decoration: none; color: var(--navy); position: relative; }
+  .logo-word { font-size: 1.85rem; font-weight: 400; letter-spacing: -.02em; line-height: 1; }
+  .logo-mark {
+    width: 11px; height: 11px; align-self: flex-end; margin-bottom: 3px;
+    background: var(--coral); clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  }
+  .logo-sub {
+    margin-left: 12px; padding-left: 12px; border-left: 1px solid var(--line);
+    font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
+    align-self: center;
+  }
+
+  .nav { display: flex; gap: 6px; margin-left: auto; }
+  .nav a {
+    position: relative; padding: 10px 14px; font-weight: 500; font-size: .98rem;
+    text-decoration: none; color: var(--navy); border-radius: 8px;
+  }
+  .nav a::after {
+    content: ''; position: absolute; left: 14px; right: 14px; bottom: 6px; height: 2px;
+    background: var(--mint); transform: scaleX(0); transform-origin: left; transition: transform .3s var(--ease);
+  }
+  .nav a:hover::after, .nav a[aria-current='page']::after { transform: scaleX(1); }
+
+  .tools { display: flex; align-items: center; gap: 10px; }
+  .phone { min-height: 40px; padding: .6em .9em; font-size: .8rem; letter-spacing: .02em; text-transform: none; }
+
+  /* The robot toggle: an eye that blinks into a scanner */
+  .robot-toggle {
+    display: inline-flex; align-items: center; gap: 9px;
+    min-height: 40px; padding: 6px 12px 6px 8px;
+    background: var(--mist); color: var(--navy);
+    border: 1px solid var(--line); border-radius: 999px;
+    font: 600 .82rem/1 var(--font); cursor: pointer;
+    transition: background .25s, color .25s, border-color .25s;
+  }
+  .robot-toggle:hover { border-color: var(--navy); }
+  .eye {
+    position: relative; width: 26px; height: 26px; border-radius: 50%;
+    background: #fff; border: 1.5px solid var(--navy); overflow: hidden; flex: none;
+  }
+  .pupil {
+    position: absolute; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--navy); top: 7px; left: 7px;
+    transition: transform .15s ease-out, background .3s, border-radius .3s, width .3s, height .3s;
+  }
+  .lid {
+    position: absolute; inset: 0; background: var(--navy); transform: translateY(-100%);
+    z-index: 1;
+  }
+  .robot-toggle.blink .lid { animation: blink .32s ease-in-out; }
+  @keyframes blink { 50% { transform: translateY(0); } }
+  .when-robot { display: none; }
+
+  :global(html.robot) .site-header { background: rgba(28, 32, 49, .9); border-color: #343a52; }
+  :global(html.robot) .logo, :global(html.robot) .nav a { color: #fff; }
+  :global(html.robot) .logo-word { font-family: var(--mono); font-size: 1.4rem; }
+  :global(html.robot) .robot-toggle { background: var(--mint); color: var(--navy-ink); border-color: var(--mint); }
+  :global(html.robot) .eye { background: var(--navy-ink); border-color: var(--navy-ink); }
+  :global(html.robot) .pupil {
+    width: 18px; height: 4px; border-radius: 2px; top: 10px; left: 3px;
+    background: var(--mint); animation: scan 1.6s ease-in-out infinite;
+  }
+  @keyframes scan { 0%, 100% { transform: translateY(-6px); } 50% { transform: translateY(6px); } }
+  :global(html.robot) .when-human { display: none; }
+  :global(html.robot) .when-robot { display: inline; }
+  :global(html.robot) .phone { border-style: dashed; }
+
+  @media (max-width: 860px) {
+    .logo-sub { display: none; }
+    .phone span { display: none; }
+    .phone { padding: .6em; width: 40px; }
+  }
+  @media (max-width: 640px) {
+    .bar { flex-wrap: wrap; gap: 4px 12px; padding-block: 10px; min-height: 0; }
+    .tools { margin-left: auto; }
+    .nav { order: 3; width: 100%; margin-left: -14px; }
+    .robot-label { display: none; }
+    .robot-toggle { padding: 6px; }
+  }
+</style>

@@ -1,0 +1,80 @@
+---
+// "Folk frågar också": open a question and a new one appears below, the way
+// a search engine keeps feeding you questions. Every answer is in the HTML
+// from the start, so crawlers and visitors without JavaScript see them all.
+interface QA { q: string; a: string }
+interface Props { items: QA[]; start?: number }
+const { items, start = 4 } = Astro.props;
+---
+<div class="paa" data-paa data-start={start}>
+  {items.map((it, i) => (
+    <details class="qa" data-qa style={`--i:${i}`}>
+      <summary>
+        <span class="q">{it.q}</span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="a"><p>{it.a}</p></div>
+    </details>
+  ))}
+  <p class="paa-count" data-paa-count aria-live="polite" data-decor></p>
+</div>
+
+<style>
+  .paa { border-top: 1px solid var(--line); }
+  .qa { border-bottom: 1px solid var(--line); }
+  .qa.is-new { animation: grow .55s var(--ease) both; }
+  @keyframes grow {
+    from { opacity: 0; transform: translateY(-10px); background: var(--mint-wash); }
+    to { opacity: 1; transform: none; background: transparent; }
+  }
+  .qa.is-hidden { display: none; }
+  summary {
+    list-style: none; display: flex; align-items: center; gap: 16px;
+    padding: 20px 4px; cursor: pointer; font-weight: 600; font-size: 1.06rem; color: var(--navy);
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary:hover .q { text-decoration: underline; text-decoration-color: var(--mint); text-underline-offset: 4px; }
+  .chev {
+    margin-left: auto; flex: none; width: 30px; height: 30px; border-radius: 50%;
+    border: 1.5px solid var(--line); position: relative; transition: transform .35s var(--ease), background .2s, border-color .2s;
+  }
+  .chev::before {
+    content: ''; position: absolute; left: 50%; top: 45%; width: 8px; height: 8px;
+    border-right: 2px solid var(--navy); border-bottom: 2px solid var(--navy);
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  details[open] .chev { transform: rotate(180deg); background: var(--mint); border-color: var(--mint); }
+  .a { padding: 0 4px 20px; color: var(--muted); max-width: 44em; }
+  .a p { margin: 0; }
+  details[open] .a { animation: fade .4s var(--ease); }
+  @keyframes fade { from { opacity: 0; transform: translateY(-4px); } }
+  .paa-count { margin: 14px 0 0; font-size: .85rem; color: var(--muted); }
+  :global(html.robot) .qa.is-hidden { display: block; }
+  :global(html.robot) .chev { display: none; }
+  @media (prefers-reduced-motion: reduce) { .qa.is-new, details[open] .a { animation: none; } }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-paa]').forEach((root) => {
+    const qas = [...root.querySelectorAll<HTMLDetailsElement>('[data-qa]')];
+    const count = root.querySelector<HTMLElement>('[data-paa-count]');
+    const start = Number(root.dataset.start || 4);
+    qas.forEach((q, i) => { if (i >= start) q.classList.add('is-hidden'); });
+
+    const update = () => {
+      const left = qas.filter((q) => q.classList.contains('is-hidden')).length;
+      if (count) count.textContent = left
+        ? `Öppna en fråga så dyker det upp en till. ${left} kvar.`
+        : 'Där tog frågorna slut. Har du en till? Ring eller mejla oss.';
+    };
+    update();
+
+    qas.forEach((q) => q.addEventListener('toggle', () => {
+      if (!q.open || q.dataset.spawned) return;
+      q.dataset.spawned = '1';
+      const next = qas.find((x) => x.classList.contains('is-hidden'));
+      if (next) { next.classList.remove('is-hidden'); next.classList.add('is-new'); }
+      update();
+    }));
+  });
+</script>

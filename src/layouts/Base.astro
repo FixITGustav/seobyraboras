@@ -1,0 +1,177 @@
+---
+import '@fontsource-variable/raleway';
+import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import RobotPanel from '../components/RobotPanel.astro';
+import site from '../content/installningar.json';
+import { resolveImage, telHref } from '../lib/content';
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+  shareImage?: string;
+  shareImageAlt?: string;
+  schema?: Record<string, unknown>[];
+}
+const { title, description, path = '/', shareImage, shareImageAlt, schema = [] } = Astro.props;
+const canonical = new URL(path, Astro.site).toString();
+
+// Social share image: the page's own, otherwise the site default from settings
+const ogSource = resolveImage(shareImage) ?? resolveImage(site.delningsbild);
+const ogAlt = (shareImage ? shareImageAlt : site.delningsbild_alt) || title;
+const og = ogSource ? await getImage({ src: ogSource, width: 1200, format: 'jpg', quality: 82 }) : null;
+const ogUrl = og ? new URL(og.src, Astro.site).toString() : null;
+
+const business = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: site.foretag,
+  legalName: site.juridiskt_namn,
+  url: new URL('/', Astro.site).toString(),
+  sameAs: ['https://fix-it.se/'],
+  telephone: telHref(site.telefon).replace('tel:', ''),
+  email: site.epost,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.gatuadress,
+    postalCode: site.postnummer,
+    addressLocality: site.ort,
+    addressCountry: 'SE',
+  },
+  areaServed: [{ '@type': 'City', name: 'Borås' }, { '@type': 'AdministrativeArea', name: 'Västra Götaland' }],
+  knowsAbout: ['Sökmotoroptimering', 'Lokal SEO', 'Google Ads', 'WordPress'],
+};
+const ldjson = [business, ...schema];
+---
+<!doctype html>
+<html lang="sv" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#2F354A" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="sv_SE" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={site.foretag} />
+    {ogUrl && <meta property="og:image" content={ogUrl} />}
+    {ogUrl && <meta property="og:image:alt" content={ogAlt} />}
+    <meta name="twitter:card" content={ogUrl ? 'summary_large_image' : 'summary'} />
+    <script is:inline>
+      // Runs before paint: set JS flag and restore robot mode without a flash
+      document.documentElement.classList.remove('no-js');
+      try { if (localStorage.getItem('robot') === '1') document.documentElement.classList.add('robot'); } catch (e) {}
+    </script>
+    {ldjson.map((d) => <script type="application/ld+json" set:html={JSON.stringify(d)} />)}
+  </head>
+  <body>
+    <a class="skip" href="#innehall">Hoppa till innehållet</a>
+    <Header path={path} />
+    <main id="innehall">
+      <slot />
+    </main>
+    <Footer />
+    <RobotPanel />
+
+    <style>
+      .skip { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--navy); color: #fff; padding: 10px 14px; border-radius: 8px; }
+      .skip:focus { top: 12px; }
+    </style>
+
+    <script>
+      const root = document.documentElement;
+      const toggle = document.querySelector<HTMLButtonElement>('[data-robot-toggle]');
+      const pupil = toggle?.querySelector<HTMLElement>('.pupil');
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* ---------- Robot mode ---------- */
+      const syncPressed = () => toggle?.setAttribute('aria-pressed', String(root.classList.contains('robot')));
+      syncPressed();
+
+      function fillPanel() {
+        const q = (s: string) => document.querySelector<HTMLElement>(s);
+        const set = (s: string, v: string, cls = '') => { const el = q(s); if (el) { el.textContent = v; el.classList.remove('ok', 'warn'); if (cls) el.classList.add(cls); } };
+        const title = document.title;
+        const desc = document.querySelector<HTMLMetaElement>('meta[name="description"]')?.content ?? '';
+        const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href ?? location.href;
+        const url = new URL(canonical);
+        set('[data-rp-url]', `${url.host} › ${url.pathname.replace(/^\/|\/$/g, '').replace(/\//g, ' › ') || ''}`.replace(/ › $/, ''));
+        set('[data-rp-title]', title.length > 60 ? title.slice(0, 57) + '...' : title);
+        set('[data-rp-desc]', desc.length > 158 ? desc.slice(0, 155) + '...' : desc);
+        set('[data-rp-tlen]', `${title.length} tecken`, title.length <= 60 ? 'ok' : 'warn');
+        set('[data-rp-dlen]', `${desc.length} tecken`, desc.length >= 110 && desc.length <= 160 ? 'ok' : 'warn');
+        const main = document.querySelector('main');
+        const h1 = main?.querySelectorAll('h1').length ?? 0;
+        set('[data-rp-h1]', `${h1} st`, h1 === 1 ? 'ok' : 'warn');
+        set('[data-rp-hx]', `${main?.querySelectorAll('h2, h3').length ?? 0} st h2/h3`);
+        const words = (main?.innerText ?? '').split(/\s+/).filter((w) => /\p{L}/u.test(w)).length;
+        set('[data-rp-words]', `${words}`);
+        const links = [...document.querySelectorAll<HTMLAnchorElement>('a[href]')];
+        const internal = links.filter((a) => a.host === location.host).length;
+        set('[data-rp-int]', `${internal}`);
+        set('[data-rp-ext]', `${links.filter((a) => a.host && a.host !== location.host).length}`);
+        const types = [...document.querySelectorAll('script[type="application/ld+json"]')]
+          .map((s) => { try { return JSON.parse(s.textContent || '{}')['@type']; } catch { return null; } })
+          .filter(Boolean);
+        set('[data-rp-schema]', types.join(', ') || 'saknas', types.length ? 'ok' : 'warn');
+      }
+
+      function setRobot(on: boolean) {
+        const apply = () => {
+          root.classList.toggle('robot', on);
+          try { localStorage.setItem('robot', on ? '1' : '0'); } catch (e) {}
+          syncPressed();
+          if (on) fillPanel();
+          window.dispatchEvent(new CustomEvent('robotchange', { detail: on }));
+        };
+        toggle?.classList.remove('blink'); void toggle?.offsetWidth; toggle?.classList.add('blink');
+        const vt = (document as any).startViewTransition;
+        if (vt && !reduce) {
+          root.classList.add(on ? 'robot-switching' : 'human-switching');
+          const t = vt.call(document, apply);
+          t.finished.finally(() => root.classList.remove('robot-switching', 'human-switching'));
+        } else apply();
+      }
+      if (root.classList.contains('robot')) fillPanel();
+
+      toggle?.addEventListener('click', () => setRobot(!root.classList.contains('robot')));
+      document.addEventListener('keydown', (e) => {
+        const t = e.target as HTMLElement;
+        if (e.key.toLowerCase() !== 'r' || e.metaKey || e.ctrlKey || e.altKey) return;
+        if (t.closest('input, textarea, select, [contenteditable="true"]')) return;
+        setRobot(!root.classList.contains('robot'));
+      });
+      document.querySelector('[data-rp-min]')?.addEventListener('click', () =>
+        document.querySelector('[data-robot-panel]')?.classList.toggle('is-min'));
+
+      /* ---------- The eye in the toggle follows the cursor ---------- */
+      if (pupil && !reduce && matchMedia('(pointer: fine)').matches) {
+        addEventListener('pointermove', (e) => {
+          if (root.classList.contains('robot')) return;
+          const r = toggle!.getBoundingClientRect();
+          const dx = e.clientX - (r.left + 21), dy = e.clientY - (r.top + r.height / 2);
+          const d = Math.hypot(dx, dy) || 1, m = Math.min(5, d / 40);
+          pupil.style.transform = `translate(${(dx / d) * m}px, ${(dy / d) * m}px)`;
+        }, { passive: true });
+        setInterval(() => {
+          if (document.hidden || root.classList.contains('robot')) return;
+          toggle!.classList.remove('blink'); void toggle!.offsetWidth; toggle!.classList.add('blink');
+        }, 5200);
+      }
+
+      /* ---------- Reveal and marker highlights ---------- */
+      const io = new IntersectionObserver((entries) => {
+        for (const en of entries) if (en.isIntersecting) { en.target.classList.add('is-in', 'is-on'); io.unobserve(en.target); }
+      }, { rootMargin: '0px 0px -12% 0px' });
+      document.querySelectorAll('[data-reveal], .mark').forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

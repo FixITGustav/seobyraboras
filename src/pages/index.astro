@@ -1,0 +1,292 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import RankClimb from '../components/RankClimb.astro';
+import Route40 from '../components/Route40.astro';
+import PeopleAlsoAsk from '../components/PeopleAlsoAsk.astro';
+import Highlight from '../components/Highlight.astro';
+import c from '../content/hem.json';
+import site from '../content/installningar.json';
+import { resolveImage, paragraphs, telHref } from '../lib/content';
+
+const faq = c.faq.fragor.map((f) => ({ q: f.fraga, a: f.svar }));
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+const borasImage = resolveImage(c.boras.bild);
+---
+<Base
+  title={c.seo.titel}
+  description={c.seo.beskrivning}
+  shareImage={c.seo.delningsbild}
+  shareImageAlt={c.seo.delningsbild_alt}
+  path="/"
+  schema={[faqSchema]}
+>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-text">
+        <p class="eyebrow">{c.hero.overrubrik}</p>
+        <h1><Highlight text={c.hero.h1} mark={c.hero.h1_markering} /></h1>
+        <p class="lead">{c.hero.ingress}</p>
+        <div class="btn-row">
+          <a class="btn" href="/kontakt/">{c.hero.knapp}</a>
+          <a class="btn btn--ghost" href={telHref(site.telefon)}>Ring {site.telefon}</a>
+        </div>
+        {c.hero.fortroende.length > 0 && (
+          <ul class="proof">
+            {c.hero.fortroende.map((p) => <li><strong>{p.rubrik}</strong><span>{p.text}</span></li>)}
+          </ul>
+        )}
+      </div>
+      <div class="hero-toy">
+        <RankClimb />
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section section--mist" id="tjanster">
+    <div class="wrap">
+      <div class="head" data-reveal>
+        <p class="eyebrow">{c.tjanster.overrubrik}</p>
+        <h2>{c.tjanster.rubrik}</h2>
+        <p class="lead">{c.tjanster.ingress}</p>
+      </div>
+      <div class="cards">
+        {c.tjanster.lista.map((s, i) => (
+          <article class="card" data-reveal style={`transition-delay:${(i % 3) * 90}ms`}>
+            <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{s.rubrik}</h3>
+            <p>{s.text}</p>
+            {s.sokning && <p class="query"><span class="q-icon" aria-hidden="true"></span><span class="q-label">Typisk sökning:</span> <span class="q-text">{s.sokning}</span></p>}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ROBOT INVITE -->
+  <section class="section section--navy invite">
+    <div class="wrap invite-grid">
+      <div data-reveal>
+        <p class="eyebrow">{c.robot.overrubrik}</p>
+        <h2>{c.robot.rubrik}</h2>
+        <p class="lead">{c.robot.text}</p>
+        <button class="btn btn--mint" type="button" data-robot-invite>
+          <span class="when-human-i">{c.robot.knapp}</span><span class="when-robot-i">Tillbaka till människoläget</span>
+        </button>
+      </div>
+      <div class="scan" aria-hidden="true" data-decor>
+        <div class="scan-doc">
+          <span class="tag">&lt;title&gt;</span><span class="ln w80"></span>
+          <span class="tag">&lt;h1&gt;</span><span class="ln w60 hi"></span>
+          <span class="tag">&lt;p&gt;</span><span class="ln w95"></span><span class="ln w90"></span><span class="ln w70"></span>
+          <span class="tag">&lt;h2&gt;</span><span class="ln w50 hi"></span>
+          <span class="tag">&lt;a&gt;</span><span class="ln w40 link"></span>
+          <span class="tag">&lt;p&gt;</span><span class="ln w85"></span><span class="ln w65"></span>
+        </div>
+        <div class="beam"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="section" id="sa-funkar-det">
+    <div class="wrap">
+      <div class="head" data-reveal>
+        <p class="eyebrow">{c.process.overrubrik}</p>
+        <h2>{c.process.rubrik}</h2>
+        <p class="lead">{c.process.ingress}</p>
+      </div>
+      <ol class="steps" data-steps style={`--cols:${Math.min(4, Math.max(1, c.process.steg.length))}`}>
+        {c.process.steg.map((s, i) => (
+          <li class="step" data-reveal style={`transition-delay:${i * 140}ms`}>
+            <span class="dot" aria-hidden="true">{i + 1}</span>
+            <h3>{s.rubrik}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- BORÅS -->
+  <section class="section section--mist">
+    <div class="wrap boras">
+      <div data-reveal>
+        <p class="eyebrow">{c.boras.overrubrik}</p>
+        <h2>{c.boras.rubrik}</h2>
+        {paragraphs(c.boras.text).map((p) => <p>{p}</p>)}
+        <a class="btn btn--ghost" href="/om-oss/">Läs mer om oss</a>
+      </div>
+      <div data-reveal class="boras-visual">
+        {borasImage && (
+          <Image src={borasImage} alt={c.boras.bild_alt} widths={[480, 720, 960, 1280]} sizes="(max-width: 960px) 100vw, 560px" class="boras-img" />
+        )}
+        <Route40 />
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="fragor">
+    <div class="wrap faq">
+      <div class="head" data-reveal>
+        <p class="eyebrow">{c.faq.overrubrik}</p>
+        <h2>{c.faq.rubrik}</h2>
+        <p class="lead">{c.faq.ingress}</p>
+      </div>
+      <PeopleAlsoAsk items={faq} start={4} />
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section section--navy cta">
+    <div class="wrap cta-inner" data-reveal>
+      <h2>{c.cta.rubrik}</h2>
+      <p class="lead">{c.cta.text}</p>
+      <div class="btn-row">
+        <a class="btn btn--mint" href="/kontakt/">{c.cta.knapp}</a>
+        <a class="btn btn--ghost cta-ghost" href={`mailto:${site.epost}`}>{site.epost}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* HERO */
+  .hero { position: relative; padding: clamp(40px, 7vw, 88px) 0 clamp(64px, 9vw, 112px); overflow: hidden; }
+  .hero::before {
+    content: ''; position: absolute; right: -10%; top: -30%; width: 70%; aspect-ratio: 1;
+    background: radial-gradient(closest-side, rgba(15, 233, 173, .16), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-grid { position: relative; display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(32px, 5vw, 72px); align-items: center; }
+  .hero h1 { margin-bottom: .45em; }
+  .hero .lead { margin-bottom: 1.8em; }
+  .proof { list-style: none; margin: 40px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 14px 32px; }
+  .proof li { display: grid; padding-left: 14px; border-left: 2px solid var(--mint); line-height: 1.35; }
+  .proof strong { color: var(--navy); font-size: .98rem; }
+  .proof span { font-size: .84rem; color: var(--muted); }
+
+  .head { max-width: 46em; margin-bottom: clamp(32px, 5vw, 56px); }
+
+  /* SERVICES */
+  .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .card { min-width: 0; }
+  .card {
+    position: relative; background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: 28px 26px 22px; display: flex; flex-direction: column;
+    transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s, opacity .8s var(--ease);
+  }
+  .card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lift); border-color: transparent; }
+  .num { font-size: .8rem; font-weight: 700; color: var(--mint-dark); letter-spacing: .06em; margin-bottom: 14px; }
+  .card h3 { margin-bottom: .5em; }
+  .card p { color: var(--muted); font-size: .97rem; }
+  .query {
+    margin: auto 0 0 !important; padding: 10px 12px; border-radius: 999px; background: var(--mist);
+    display: flex; align-items: center; gap: 8px; font-size: .84rem !important; color: var(--navy) !important;
+    overflow: hidden; white-space: nowrap;
+  }
+  .q-icon { width: 11px; height: 11px; border: 2px solid var(--muted); border-radius: 50%; position: relative; flex: none; }
+  .q-icon::after { content: ''; position: absolute; width: 2px; height: 6px; background: var(--muted); right: -4px; bottom: -5px; transform: rotate(-45deg); }
+  .q-label { color: var(--muted); }
+  .q-text {
+    font-weight: 600; overflow: hidden; text-overflow: ellipsis;
+    background: linear-gradient(90deg, var(--navy) 50%, var(--muted) 50%) 100% 0 / 200% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    transition: background-position .9s var(--ease);
+  }
+  .card:hover .q-text { background-position: 0 0; }
+
+  /* ROBOT INVITE */
+  .invite-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
+  .invite .lead { margin-bottom: 1.6em; }
+  .when-robot-i { display: none; }
+  :global(html.robot) .when-human-i { display: none; }
+  :global(html.robot) .when-robot-i { display: inline; }
+  .scan { position: relative; border-radius: 16px; overflow: hidden; background: #262b3e; border: 1px solid #3a4058; padding: 26px; }
+  .scan-doc { display: grid; grid-template-columns: auto 1fr; gap: 10px 14px; align-items: center; font: 12px var(--mono); }
+  .scan-doc .tag { color: var(--coral); grid-column: 1; }
+  .scan-doc .ln { grid-column: 2; height: 8px; border-radius: 4px; background: #3d4460; }
+  .ln.hi { background: #fff; height: 10px; }
+  .ln.link { background: var(--mint); }
+  .w95 { width: 95%; } .w90 { width: 90%; } .w85 { width: 85%; } .w80 { width: 80%; } .w70 { width: 70%; } .w65 { width: 65%; } .w60 { width: 60%; } .w50 { width: 50%; } .w40 { width: 40%; }
+  .beam {
+    position: absolute; left: 0; right: 0; height: 60px; top: -60px;
+    background: linear-gradient(transparent, rgba(15, 233, 173, .22) 70%, var(--mint));
+    border-bottom: 2px solid var(--mint);
+    animation: beam 3.2s cubic-bezier(.6, 0, .4, 1) infinite;
+  }
+  @keyframes beam { 0% { top: -60px; } 70%, 100% { top: 100%; } }
+
+  /* PROCESS */
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); gap: 28px; position: relative; counter-reset: s; }
+  .steps::before {
+    content: ''; position: absolute; left: 22px; right: 22px; top: 22px; height: 2px;
+    background: linear-gradient(90deg, var(--mint), var(--mint-dark));
+    transform: scaleX(0); transform-origin: left; transition: transform 1.4s var(--ease) .2s;
+  }
+  .steps:has(.is-in)::before { transform: scaleX(1); }
+  .step { position: relative; }
+  .dot {
+    position: relative; z-index: 1; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%;
+    background: var(--navy); color: #fff; font-weight: 700; margin-bottom: 20px; box-shadow: 0 0 0 6px #fff;
+  }
+  .step p { color: var(--muted); }
+
+  /* BORÅS */
+  .boras { display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
+  .boras p { color: var(--muted); }
+  .boras .btn { margin-top: .6em; }
+  .boras-visual { display: grid; gap: 24px; }
+  .boras-img { width: 100%; height: auto; border-radius: 16px; box-shadow: var(--shadow); }
+
+  /* FAQ */
+  .faq > :global(*) { max-width: 860px; }
+
+  /* CTA */
+  .cta { text-align: center; }
+  .cta-inner { display: grid; justify-items: center; }
+  .cta .lead { margin-inline: auto; margin-bottom: 1.6em; }
+  .cta .btn-row { justify-content: center; }
+  .cta-ghost { --fg: #fff; --bd: #6b728c; text-transform: none; letter-spacing: 0; }
+  .cta-ghost:hover { background: #fff; --fg: var(--navy); }
+
+  @media (max-width: 960px) {
+    .hero-grid, .invite-grid, .boras { grid-template-columns: 1fr; }
+    .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hero-toy { max-width: 560px; }
+  }
+  @media (max-width: 640px) {
+    .cards { grid-template-columns: minmax(0, 1fr); }
+    .steps { grid-template-columns: 1fr; gap: 8px; }
+    .steps::before { left: 22px; right: auto; top: 22px; bottom: 40px; width: 2px; height: auto; transform: scaleY(0); transform-origin: top; }
+    .steps:has(.is-in)::before { transform: scaleY(1); }
+    .step { padding-left: 68px; }
+    .dot { position: absolute; left: 0; top: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .beam { animation: none; display: none; } }
+
+  :global(html.robot) .card { background: transparent; border: 1px dashed #343a52; }
+  :global(html.robot) .card:hover { transform: none; box-shadow: none; }
+  :global(html.robot) .query { background: transparent; padding: 0; }
+  :global(html.robot) .q-text { color: var(--mint); background: none; }
+  :global(html.robot) .q-icon { display: none; }
+  :global(html.robot) .dot { background: transparent; box-shadow: none; border: 1px dashed var(--mint); color: var(--mint); }
+  :global(html.robot) .steps::before { display: none; }
+  :global(html.robot) .hero::before { display: none; }
+  :global(html.robot) .proof li { border-color: #343a52; }
+  :global(html.robot) .proof strong { color: #fff; }
+</style>
+
+<script>
+  document.querySelector('[data-robot-invite]')?.addEventListener('click', () => {
+    document.querySelector<HTMLButtonElement>('[data-robot-toggle]')?.click();
+    window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+</script>
