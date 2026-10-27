@@ -6,9 +6,9 @@
     "delningsbild_alt": ""
   },
   "hero": {
-    "overrubrik": "Kontakt",
-    "h1": "Skriv ett brev till oss",
-    "h1_markering": "",
+    "h1": "Kontakt",
+    "rubrik": "Skriv ett brev till oss",
+    "rubrik_markering": "",
     "ingress": "Fyll i luckorna så har du skrivit klart. Medan du skriver ser du hur ditt företag skulle kunna se ut i sökresultaten."
   },
   "brev": {

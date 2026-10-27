@@ -29,10 +29,12 @@ const links = [
         </span>
         <span class="robot-label"><span class="when-human">Robotläge</span><span class="when-robot">Människoläge</span></span>
       </button>
+      {site.telefon && (
       <a class="btn btn--ghost phone" href={telHref(site.telefon)}>
         <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.3 0 .7-.2 1z"/></svg>
         <span>{site.telefon}</span>
       </a>
+      )}
     </div>
   </div>
 </header>

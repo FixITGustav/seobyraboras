@@ -1,0 +1,8 @@
+---
+// Renders a text element only when it has content, so empty CMS fields
+// leave no empty tags behind. Usage: <Opt as="p" class="lead" text={value} />
+interface Props { as?: string; text?: string | null; [key: string]: unknown }
+const { as: Tag = 'p', text, ...rest } = Astro.props;
+const value = typeof text === 'string' ? text.trim() : text;
+---
+{value && <Tag {...rest}>{value}</Tag>}

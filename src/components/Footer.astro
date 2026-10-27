@@ -7,18 +7,18 @@ const year = new Date().getFullYear();
   <div class="wrap grid">
     <div>
       <p class="f-logo">Fix IT<span class="logo-mark" aria-hidden="true"></span></p>
-      <p class="f-tag">{site.sidfot_text}</p>
+      {site.sidfot_text && <p class="f-tag">{site.sidfot_text}</p>}
     </div>
     <div>
       <h2 class="f-h">Kontakt</h2>
       <ul>
-        <li><a href={telHref(site.telefon)}>{site.telefon}</a></li>
-        <li><a href={`mailto:${site.epost}`}>{site.epost}</a></li>
+        {site.telefon && <li><a href={telHref(site.telefon)}>{site.telefon}</a></li>}
+        {site.epost && <li><a href={`mailto:${site.epost}`}>{site.epost}</a></li>}
       </ul>
     </div>
     <div>
       <h2 class="f-h">Kontor</h2>
-      <address>{site.gatuadress}<br />{site.postnummer} {site.ort}</address>
+      <address>{site.gatuadress}{site.gatuadress && <br />}{[site.postnummer, site.ort].filter(Boolean).join(' ')}</address>
     </div>
     <div>
       <h2 class="f-h">Sidor</h2>
@@ -31,7 +31,7 @@ const year = new Date().getFullYear();
     </div>
   </div>
   <div class="wrap legal">
-    <span>© {year} {site.juridiskt_namn} · Org.nr {site.orgnr}</span>
+    <span>© {year} {site.juridiskt_namn || site.foretag}{site.orgnr && ` · Org.nr ${site.orgnr}`}</span>
     <span class="hint" data-decor>Tips: tryck <kbd>R</kbd> för att se sidan som en sökmotor</span>
   </div>
 </footer>

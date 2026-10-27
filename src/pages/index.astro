@@ -4,41 +4,54 @@ import Base from '../layouts/Base.astro';
 import RankClimb from '../components/RankClimb.astro';
 import Route40 from '../components/Route40.astro';
 import PeopleAlsoAsk from '../components/PeopleAlsoAsk.astro';
-import Highlight from '../components/Highlight.astro';
-import c from '../content/hem.json';
+import Hero from '../components/Hero.astro';
+import Opt from '../components/Opt.astro';
+import data from '../content/hem.json';
 import site from '../content/installningar.json';
-import { resolveImage, paragraphs, telHref } from '../lib/content';
+import { resolveImage, paragraphs, telHref, list } from '../lib/content';
 
-const faq = c.faq.fragor.map((f) => ({ q: f.fraga, a: f.svar }));
-const faqSchema = {
+// Every field is optional in the CMS, so read everything defensively
+const c: any = data ?? {};
+const seo = c.seo ?? {};
+const hero = c.hero ?? {};
+const tj = c.tjanster ?? {};
+const robot = c.robot ?? {};
+const proc = c.process ?? {};
+const boras = c.boras ?? {};
+const fq = c.faq ?? {};
+const cta = c.cta ?? {};
+
+const faq = list(fq.fragor).filter((f: any) => f?.fraga?.trim() && f?.svar?.trim()).map((f: any) => ({ q: f.fraga.trim(), a: f.svar.trim() }));
+const faqSchema = faq.length ? [{
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
-};
-const borasImage = resolveImage(c.boras.bild);
+}] : [];
+const borasImage = resolveImage(boras.bild);
+const steps = list(proc.steg);
+const trust = list(hero.fortroende);
 ---
 <Base
-  title={c.seo.titel}
-  description={c.seo.beskrivning}
-  shareImage={c.seo.delningsbild}
-  shareImageAlt={c.seo.delningsbild_alt}
+  title={seo.titel}
+  fallbackTitle={hero.h1}
+  description={seo.beskrivning}
+  shareImage={seo.delningsbild}
+  shareImageAlt={seo.delningsbild_alt}
   path="/"
-  schema={[faqSchema]}
+  schema={faqSchema}
 >
   <!-- HERO -->
   <section class="hero">
     <div class="wrap hero-grid">
       <div class="hero-text">
-        <p class="eyebrow">{c.hero.overrubrik}</p>
-        <h1><Highlight text={c.hero.h1} mark={c.hero.h1_markering} /></h1>
-        <p class="lead">{c.hero.ingress}</p>
+        <Hero h1={hero.h1} rubrik={hero.rubrik} markering={hero.rubrik_markering} ingress={hero.ingress} />
         <div class="btn-row">
-          <a class="btn" href="/kontakt/">{c.hero.knapp}</a>
-          <a class="btn btn--ghost" href={telHref(site.telefon)}>Ring {site.telefon}</a>
+          {hero.knapp?.trim() && <a class="btn" href="/kontakt/">{hero.knapp}</a>}
+          {site.telefon && <a class="btn btn--ghost" href={telHref(site.telefon)}>Ring {site.telefon}</a>}
         </div>
-        {c.hero.fortroende.length > 0 && (
+        {trust.length > 0 && (
           <ul class="proof">
-            {c.hero.fortroende.map((p) => <li><strong>{p.rubrik}</strong><span>{p.text}</span></li>)}
+            {trust.map((p: any) => <li><strong>{p.rubrik}</strong><Opt as="span" text={p.text} /></li>)}
           </ul>
         )}
       </div>
@@ -52,17 +65,17 @@ const borasImage = resolveImage(c.boras.bild);
   <section class="section section--mist" id="tjanster">
     <div class="wrap">
       <div class="head" data-reveal>
-        <p class="eyebrow">{c.tjanster.overrubrik}</p>
-        <h2>{c.tjanster.rubrik}</h2>
-        <p class="lead">{c.tjanster.ingress}</p>
+        <Opt class="eyebrow" text={tj.overrubrik} />
+        <Opt as="h2" text={tj.rubrik} />
+        <Opt class="lead" text={tj.ingress} />
       </div>
       <div class="cards">
-        {c.tjanster.lista.map((s, i) => (
+        {list(tj.lista).map((s: any, i: number) => (
           <article class="card" data-reveal style={`transition-delay:${(i % 3) * 90}ms`}>
             <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-            <h3>{s.rubrik}</h3>
-            <p>{s.text}</p>
-            {s.sokning && <p class="query"><span class="q-icon" aria-hidden="true"></span><span class="q-label">Typisk sökning:</span> <span class="q-text">{s.sokning}</span></p>}
+            <Opt as="h3" text={s.rubrik} />
+            <Opt text={s.text} />
+            {s.sokning?.trim() && <p class="query"><span class="q-icon" aria-hidden="true"></span><span class="q-label">Typisk sökning:</span> <span class="q-text">{s.sokning}</span></p>}
           </article>
         ))}
       </div>
@@ -73,11 +86,11 @@ const borasImage = resolveImage(c.boras.bild);
   <section class="section section--navy invite">
     <div class="wrap invite-grid">
       <div data-reveal>
-        <p class="eyebrow">{c.robot.overrubrik}</p>
-        <h2>{c.robot.rubrik}</h2>
-        <p class="lead">{c.robot.text}</p>
+        <Opt class="eyebrow" text={robot.overrubrik} />
+        <Opt as="h2" text={robot.rubrik} />
+        <Opt class="lead" text={robot.text} />
         <button class="btn btn--mint" type="button" data-robot-invite>
-          <span class="when-human-i">{c.robot.knapp}</span><span class="when-robot-i">Tillbaka till människoläget</span>
+          <span class="when-human-i">{robot.knapp?.trim() || 'Visa robotläget'}</span><span class="when-robot-i">Tillbaka till människoläget</span>
         </button>
       </div>
       <div class="scan" aria-hidden="true" data-decor>
@@ -98,19 +111,21 @@ const borasImage = resolveImage(c.boras.bild);
   <section class="section" id="sa-funkar-det">
     <div class="wrap">
       <div class="head" data-reveal>
-        <p class="eyebrow">{c.process.overrubrik}</p>
-        <h2>{c.process.rubrik}</h2>
-        <p class="lead">{c.process.ingress}</p>
+        <Opt class="eyebrow" text={proc.overrubrik} />
+        <Opt as="h2" text={proc.rubrik} />
+        <Opt class="lead" text={proc.ingress} />
       </div>
-      <ol class="steps" data-steps style={`--cols:${Math.min(4, Math.max(1, c.process.steg.length))}`}>
-        {c.process.steg.map((s, i) => (
-          <li class="step" data-reveal style={`transition-delay:${i * 140}ms`}>
-            <span class="dot" aria-hidden="true">{i + 1}</span>
-            <h3>{s.rubrik}</h3>
-            <p>{s.text}</p>
-          </li>
-        ))}
-      </ol>
+      {steps.length > 0 && (
+        <ol class="steps" data-steps style={`--cols:${Math.min(4, steps.length)}`}>
+          {steps.map((s: any, i: number) => (
+            <li class="step" data-reveal style={`transition-delay:${i * 140}ms`}>
+              <span class="dot" aria-hidden="true">{i + 1}</span>
+              <Opt as="h3" text={s.rubrik} />
+              <Opt text={s.text} />
+            </li>
+          ))}
+        </ol>
+      )}
     </div>
   </section>
 
@@ -118,14 +133,14 @@ const borasImage = resolveImage(c.boras.bild);
   <section class="section section--mist">
     <div class="wrap boras">
       <div data-reveal>
-        <p class="eyebrow">{c.boras.overrubrik}</p>
-        <h2>{c.boras.rubrik}</h2>
-        {paragraphs(c.boras.text).map((p) => <p>{p}</p>)}
+        <Opt class="eyebrow" text={boras.overrubrik} />
+        <Opt as="h2" text={boras.rubrik} />
+        {paragraphs(boras.text).map((p) => <p>{p}</p>)}
         <a class="btn btn--ghost" href="/om-oss/">Läs mer om oss</a>
       </div>
       <div data-reveal class="boras-visual">
         {borasImage && (
-          <Image src={borasImage} alt={c.boras.bild_alt} widths={[480, 720, 960, 1280]} sizes="(max-width: 960px) 100vw, 560px" class="boras-img" />
+          <Image src={borasImage} alt={boras.bild_alt || ''} widths={[480, 720, 960, 1280]} sizes="(max-width: 960px) 100vw, 560px" class="boras-img" />
         )}
         <Route40 />
       </div>
@@ -133,25 +148,27 @@ const borasImage = resolveImage(c.boras.bild);
   </section>
 
   <!-- FAQ -->
-  <section class="section" id="fragor">
-    <div class="wrap faq">
-      <div class="head" data-reveal>
-        <p class="eyebrow">{c.faq.overrubrik}</p>
-        <h2>{c.faq.rubrik}</h2>
-        <p class="lead">{c.faq.ingress}</p>
+  {faq.length > 0 && (
+    <section class="section" id="fragor">
+      <div class="wrap faq">
+        <div class="head" data-reveal>
+          <Opt class="eyebrow" text={fq.overrubrik} />
+          <Opt as="h2" text={fq.rubrik} />
+          <Opt class="lead" text={fq.ingress} />
+        </div>
+        <PeopleAlsoAsk items={faq} start={4} />
       </div>
-      <PeopleAlsoAsk items={faq} start={4} />
-    </div>
-  </section>
+    </section>
+  )}
 
   <!-- CTA -->
   <section class="section section--navy cta">
     <div class="wrap cta-inner" data-reveal>
-      <h2>{c.cta.rubrik}</h2>
-      <p class="lead">{c.cta.text}</p>
+      <Opt as="h2" text={cta.rubrik} />
+      <Opt class="lead" text={cta.text} />
       <div class="btn-row">
-        <a class="btn btn--mint" href="/kontakt/">{c.cta.knapp}</a>
-        <a class="btn btn--ghost cta-ghost" href={`mailto:${site.epost}`}>{site.epost}</a>
+        <a class="btn btn--mint" href="/kontakt/">{cta.knapp?.trim() || 'Kontakta oss'}</a>
+        {site.epost && <a class="btn btn--ghost cta-ghost" href={`mailto:${site.epost}`}>{site.epost}</a>}
       </div>
     </div>
   </section>
@@ -166,7 +183,7 @@ const borasImage = resolveImage(c.boras.bild);
     pointer-events: none;
   }
   .hero-grid { position: relative; display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(32px, 5vw, 72px); align-items: center; }
-  .hero h1 { margin-bottom: .45em; }
+  .hero :global(.display) { margin-bottom: .45em; }
   .hero .lead { margin-bottom: 1.8em; }
   .proof { list-style: none; margin: 40px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 14px 32px; }
   .proof li { display: grid; padding-left: 14px; border-left: 2px solid var(--mint); line-height: 1.35; }

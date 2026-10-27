@@ -188,3 +188,14 @@ html.robot .robot-comment {
 html.robot .robot-comment::before { content: none !important; }
 html.robot :is(li, p, h1, h2, h3, summary)::before { justify-self: start; align-self: start; width: max-content; height: auto; background: none; }
 html.robot .eyebrow::before { content: 'p'; }
+
+/* Page top: the H1 is the small eyebrow text, the big headline is an H2 styled as a display heading */
+h1.eyebrow { line-height: 1.4; letter-spacing: .08em; margin: 0 0 1rem; }
+.display {
+  font-size: clamp(2.3rem, 5.4vw, 3.9rem); font-weight: 700; line-height: 1.15;
+  letter-spacing: -.01em; color: var(--navy); margin: 0 0 .5em;
+}
+html.robot .eyebrow::before { content: 'p'; }
+html.robot h1.eyebrow { color: #fff; font-size: clamp(1.2rem, 2.4vw, 1.5rem); text-transform: none; letter-spacing: 0; }
+html.robot h1.eyebrow::before { content: 'h1'; color: var(--coral); border-color: rgba(255, 128, 139, .45); }
+html.robot .display { font-size: clamp(1.25rem, 2.4vw, 1.6rem); }

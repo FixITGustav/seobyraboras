@@ -1,37 +1,46 @@
 ---
 import Base from '../layouts/Base.astro';
-import Highlight from '../components/Highlight.astro';
-import c from '../content/kontakt.json';
+import Hero from '../components/Hero.astro';
+import Opt from '../components/Opt.astro';
+import data from '../content/kontakt.json';
 import site from '../content/installningar.json';
 import { telHref } from '../lib/content';
 // Where the form posts. Set PUBLIC_FORM_ENDPOINT in Cloudflare Pages (for example a
 // Formspree or Web3Forms URL). Without it the form opens the visitor's mail app instead.
 const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT || '';
+// Every field is optional in the CMS, so read everything defensively
+const c: any = data ?? {};
+const seo = c.seo ?? {};
+const hero = c.hero ?? {};
+const brev = c.brev ?? {};
+const tack = c.tack ?? {};
+const email = site.epost?.trim() || 'info@fix-it.se';
+const greeting = brev.halsning?.trim() || 'Hej!';
+const privacy = brev.integritet?.trim() || '';
 // The word "integritetspolicy" in the privacy line becomes a link to the policy
-const [privBefore, privAfter] = c.brev.integritet.includes('integritetspolicy')
-  ? c.brev.integritet.split(/integritetspolicy(.*)/s)
-  : [c.brev.integritet, null];
+const [privBefore, privAfter] = privacy.includes('integritetspolicy') && site.integritetspolicy
+  ? privacy.split(/integritetspolicy(.*)/s)
+  : [privacy, null];
 ---
 <Base
-  title={c.seo.titel}
-  description={c.seo.beskrivning}
-  shareImage={c.seo.delningsbild}
-  shareImageAlt={c.seo.delningsbild_alt}
+  title={seo.titel}
+  fallbackTitle={hero.h1}
+  description={seo.beskrivning}
+  shareImage={seo.delningsbild}
+  shareImageAlt={seo.delningsbild_alt}
   path="/kontakt/"
 >
   <section class="contact-hero">
     <div class="wrap">
-      <p class="eyebrow">{c.hero.overrubrik}</p>
-      <h1><Highlight text={c.hero.h1} mark={c.hero.h1_markering} /></h1>
-      <p class="lead">{c.hero.ingress}</p>
+      <Hero h1={hero.h1} rubrik={hero.rubrik} markering={hero.rubrik_markering} ingress={hero.ingress} />
     </div>
   </section>
 
   <section class="section contact-main">
     <div class="wrap layout">
-      <form class="letter" data-letter data-endpoint={endpoint} data-email={site.epost} data-phone={site.telefon} data-greeting={c.brev.halsning} novalidate>
+      <form class="letter" data-letter data-endpoint={endpoint} data-email={email} data-phone={site.telefon || ''} data-greeting={greeting} novalidate>
         <div class="paper">
-          <p class="greet">{c.brev.halsning}</p>
+          <p class="greet">{greeting}</p>
 
           <p class="line">
             Jag heter
@@ -77,16 +86,16 @@ const [privBefore, privAfter] = c.brev.integritet.includes('integritetspolicy')
           <label class="hp" aria-hidden="true">Lämna tomt <input name="webbplats" tabindex="-1" autocomplete="off" /></label>
 
           <div class="send-row">
-            <button class="btn" type="submit" data-send>{c.brev.knapp}</button>
+            <button class="btn" type="submit" data-send>{brev.knapp?.trim() || 'Skicka'}</button>
             <p class="status" data-status role="status"></p>
           </div>
-          <p class="privacy">{privBefore}{privAfter !== null && <><a href={site.integritetspolicy}>integritetspolicy</a>{privAfter}</>}</p>
+          {privacy && <p class="privacy">{privBefore}{privAfter !== null && <><a href={site.integritetspolicy}>integritetspolicy</a>{privAfter}</>}</p>}
         </div>
 
         <div class="thanks" data-thanks tabindex="-1">
           <div class="env" aria-hidden="true"><span class="flap"></span></div>
-          <h2>{c.tack.rubrik}</h2>
-          <p data-thanks-text>{c.tack.text}</p>
+          <h2>{tack.rubrik?.trim() || 'Tack!'}</h2>
+          <p data-thanks-text>{tack.text}</p>
         </div>
       </form>
 
@@ -102,18 +111,20 @@ const [privBefore, privAfter] = c.brev.integritet.includes('integritetspolicy')
             <p class="pv-title" data-pv-title>Takläggare i Borås | Ditt företag</p>
             <p class="pv-desc" data-pv-desc>Ditt företag hjälper dig med takläggare i Borås. Ring oss eller boka direkt på hemsidan.</p>
           </div>
-          <p class="pv-note">{c.forhandsvisning}</p>
+          <Opt class="pv-note" text={c.forhandsvisning} />
         </div>
 
         <div class="tiles">
+          {site.telefon && (
           <a class="tile" href={telHref(site.telefon)}>
             <span class="t-k">Ring</span><span class="t-v">{site.telefon}</span>
           </a>
-          <a class="tile" href={`mailto:${site.epost}`}>
-            <span class="t-k">Mejla</span><span class="t-v">{site.epost}</span>
+          )}
+          <a class="tile" href={`mailto:${email}`}>
+            <span class="t-k">Mejla</span><span class="t-v">{email}</span>
           </a>
           <div class="tile">
-            <span class="t-k">Kontor</span><span class="t-v">{site.gatuadress}, {site.postnummer} {site.ort}</span>
+            <span class="t-k">Kontor</span><span class="t-v">{[site.gatuadress, [site.postnummer, site.ort].filter(Boolean).join(' ')].filter(Boolean).join(', ')}</span>
           </div>
         </div>
       </aside>
@@ -319,7 +330,7 @@ const [privBefore, privAfter] = c.brev.integritet.includes('integritetspolicy')
           form.classList.add('sent');
           $<HTMLElement>('[data-thanks]').focus();
         } catch {
-          status.textContent = `Något gick snett. Ring ${form.dataset.phone} eller mejla ${form.dataset.email} istället.`;
+          status.textContent = `Något gick snett. ${form.dataset.phone ? `Ring ${form.dataset.phone} eller mejla` : 'Mejla'} ${form.dataset.email} istället.`;
           status.classList.add('err');
         } finally { send.disabled = false; }
       } else {

@@ -1,132 +1,156 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import Highlight from '../components/Highlight.astro';
-import c from '../content/om-oss.json';
+import Hero from '../components/Hero.astro';
+import Opt from '../components/Opt.astro';
+import data from '../content/om-oss.json';
 import site from '../content/installningar.json';
-import { resolveImage, telHref } from '../lib/content';
+import { resolveImage, telHref, list } from '../lib/content';
 
-const people = c.personer.map((p) => ({ ...p, img: resolveImage(p.bild), init: p.namn.trim().charAt(0) }));
-const chapters = c.historia.kapitel;
+// Every field is optional in the CMS, so read everything defensively
+const c: any = data ?? {};
+const seo = c.seo ?? {};
+const hero = c.hero ?? {};
+const hist = c.historia ?? {};
+const varden = c.varden ?? {};
+const cta = c.cta ?? {};
+
+const people = list(c.personer).map((p: any) => ({
+  ...p,
+  img: resolveImage(p.bild),
+  init: (p.namn ?? '').trim().charAt(0) || '?',
+  fakta: list(p.fakta).filter((f: any) => f.etikett?.trim() || f.text?.trim()),
+}));
+const chapters = list(hist.kapitel)
+  .filter((ch: any) => ch.rubrik?.trim() || ch.text?.trim())
+  .map((ch: any) => ({ ...ch, fras: (ch.sokfras?.trim() || ch.rubrik?.trim() || ch.tid?.trim() || '').toLowerCase() }));
+const values = list(varden.lista);
 ---
 <Base
-  title={c.seo.titel}
-  description={c.seo.beskrivning}
-  shareImage={c.seo.delningsbild}
-  shareImageAlt={c.seo.delningsbild_alt}
+  title={seo.titel}
+  fallbackTitle={hero.h1}
+  description={seo.beskrivning}
+  shareImage={seo.delningsbild}
+  shareImageAlt={seo.delningsbild_alt}
   path="/om-oss/"
 >
   <section class="about-hero">
     <div class="wrap">
-      <p class="eyebrow">{c.hero.overrubrik}</p>
-      <h1><Highlight text={c.hero.h1} mark={c.hero.h1_markering} /></h1>
-      <p class="lead">{c.hero.ingress}</p>
+      <Hero h1={hero.h1} rubrik={hero.rubrik} markering={hero.rubrik_markering} ingress={hero.ingress} />
     </div>
   </section>
 
   <!-- PEOPLE as knowledge panels -->
-  <section class="section section--mist">
-    <div class="wrap">
-      <div class="people">
-        {people.map((p, i) => (
-          <article class="panel" data-reveal style={`transition-delay:${i * 120}ms`}>
-            <div class="panel-top">
-              <div class={`avatar${p.img ? ' has-photo' : ''}`}>
-                {p.img
-                  ? <Image src={p.img} alt={p.bild_alt || p.namn} width={160} height={160} fit="cover" class="photo" />
-                  : <span aria-hidden="true">{p.init}</span>}
+  {people.length > 0 && (
+    <section class="section section--mist">
+      <div class="wrap">
+        <div class="people">
+          {people.map((p: any, i: number) => (
+            <article class="panel" data-reveal style={`transition-delay:${i * 120}ms`}>
+              <div class="panel-top">
+                <div class={`avatar${p.img ? ' has-photo' : ''}`}>
+                  {p.img
+                    ? <Image src={p.img} alt={p.bild_alt || p.namn || ''} width={160} height={160} fit="cover" class="photo" />
+                    : <span aria-hidden="true">{p.init}</span>}
+                </div>
+                <div>
+                  <Opt as="h2" class="p-name" text={p.namn} />
+                  <Opt class="p-role" text={p.roll} />
+                </div>
               </div>
-              <div>
-                <h2 class="p-name">{p.namn}</h2>
-                <p class="p-role">{p.roll}</p>
-              </div>
-            </div>
-            <dl class="facts">
-              {p.fakta.map((f) => (
-                <div><dt>{f.etikett}</dt><dd>{f.text}</dd></div>
-              ))}
-            </dl>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- STORY as a search box -->
-  <section class="section">
-    <div class="wrap">
-      <div class="head" data-reveal>
-        <p class="eyebrow">{c.historia.overrubrik}</p>
-        <h2>{c.historia.rubrik}</h2>
-        <p class="lead">{c.historia.ingress}</p>
-      </div>
-
-      <div class="story" data-story>
-        <div class="searchbox" data-decor>
-          <label class="sb-field">
-            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m15.5 15.5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            <span class="visually-hidden">Sök i vår historia</span>
-            <input type="text" autocomplete="off" spellcheck="false" placeholder="fix it ..." data-story-input
-              role="combobox" aria-expanded="true" aria-controls="story-list" aria-autocomplete="list" />
-          </label>
-          <ul class="suggest" id="story-list" role="listbox" data-story-list>
-            {chapters.map((ch, i) => (
-              <li role="option" id={`opt-${i}`} data-opt={i} aria-selected="false">
-                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 7v5l3 3"/><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                <span class="s-q">{ch.sokfras.toLowerCase()}</span>
-                <span class="s-y">{ch.tid}</span>
-              </li>
-            ))}
-            <li class="s-empty" data-story-empty hidden>Inga träffar. Prova "borås" eller "2020".</li>
-          </ul>
-        </div>
-
-        <div class="chapters" data-chapters>
-          {chapters.map((ch, i) => (
-            <article class="chapter" data-ch={i} aria-labelledby={`ch-${i}`}>
-              <p class="ch-year">{ch.tid}</p>
-              <h3 id={`ch-${i}`}>{ch.rubrik}</h3>
-              <p>{ch.text}</p>
+              {p.fakta.length > 0 && (
+                <dl class="facts">
+                  {p.fakta.map((f: any) => (
+                    <div><dt>{f.etikett}</dt><dd>{f.text}</dd></div>
+                  ))}
+                </dl>
+              )}
             </article>
           ))}
-          <div class="ch-nav" data-decor>
-            <button type="button" class="ch-btn" data-prev aria-label="Föregående kapitel">←</button>
-            <div class="ch-dots" aria-hidden="true">
-              {chapters.map((_, i) => <span data-dot={i}></span>)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- STORY as a search box -->
+  {chapters.length > 0 && (
+    <section class="section">
+      <div class="wrap">
+        <div class="head" data-reveal>
+          <Opt class="eyebrow" text={hist.overrubrik} />
+          <Opt as="h2" text={hist.rubrik} />
+          <Opt class="lead" text={hist.ingress} />
+        </div>
+
+        <div class="story" data-story>
+          <div class="searchbox" data-decor>
+            <label class="sb-field">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m15.5 15.5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span class="visually-hidden">Sök i vår historia</span>
+              <input type="text" autocomplete="off" spellcheck="false" placeholder="fix it ..." data-story-input
+                role="combobox" aria-expanded="true" aria-controls="story-list" aria-autocomplete="list" />
+            </label>
+            <ul class="suggest" id="story-list" role="listbox" data-story-list>
+              {chapters.map((ch: any, i: number) => (
+                <li role="option" id={`opt-${i}`} data-opt={i} aria-selected="false">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 7v5l3 3"/><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                  <span class="s-q">{ch.fras}</span>
+                  <span class="s-y">{ch.tid}</span>
+                </li>
+              ))}
+              <li class="s-empty" data-story-empty hidden>Inga träffar. Prova "borås" eller "2020".</li>
+            </ul>
+          </div>
+
+          <div class="chapters" data-chapters>
+            {chapters.map((ch: any, i: number) => (
+              <article class="chapter" data-ch={i} aria-labelledby={`ch-${i}`}>
+                <Opt class="ch-year" text={ch.tid} />
+                <Opt as="h3" id={`ch-${i}`} text={ch.rubrik} />
+                <Opt text={ch.text} />
+              </article>
+            ))}
+            <div class="ch-nav" data-decor>
+              <button type="button" class="ch-btn" data-prev aria-label="Föregående kapitel">←</button>
+              <div class="ch-dots" aria-hidden="true">
+                {chapters.map((_: any, i: number) => <span data-dot={i}></span>)}
+              </div>
+              <button type="button" class="ch-btn" data-next aria-label="Nästa kapitel">→</button>
             </div>
-            <button type="button" class="ch-btn" data-next aria-label="Nästa kapitel">→</button>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  )}
 
   <!-- VALUES -->
-  <section class="section section--mist">
-    <div class="wrap">
-      <div class="head" data-reveal>
-        <p class="eyebrow">{c.varden.overrubrik}</p>
-        <h2>{c.varden.rubrik}</h2>
+  {values.length > 0 && (
+    <section class="section section--mist">
+      <div class="wrap">
+        <div class="head" data-reveal>
+          <Opt class="eyebrow" text={varden.overrubrik} />
+          <Opt as="h2" text={varden.rubrik} />
+        </div>
+        <div class="values">
+          {values.map((v: any, i: number) => (
+            <div class="value" data-reveal style={`transition-delay:${i * 100}ms`}>
+              <span class="v-n" aria-hidden="true">{i + 1}</span>
+              <Opt as="h3" text={v.rubrik} />
+              <Opt text={v.text} />
+            </div>
+          ))}
+        </div>
       </div>
-      <div class="values">
-        {c.varden.lista.map((v, i) => (
-          <div class="value" data-reveal style={`transition-delay:${i * 100}ms`}>
-            <span class="v-n" aria-hidden="true">{i + 1}</span>
-            <h3>{v.rubrik}</h3>
-            <p>{v.text}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+    </section>
+  )}
 
   <section class="section section--navy cta">
     <div class="wrap cta-inner" data-reveal>
-      <h2>{c.cta.rubrik}</h2>
-      <p class="lead">{c.cta.text}</p>
+      <Opt as="h2" text={cta.rubrik} />
+      <Opt class="lead" text={cta.text} />
       <div class="btn-row">
-        <a class="btn btn--mint" href="/kontakt/">{c.cta.knapp}</a>
-        <a class="btn btn--ghost cta-ghost" href={telHref(site.telefon)}>{site.telefon}</a>
+        <a class="btn btn--mint" href="/kontakt/">{cta.knapp?.trim() || 'Kontakta oss'}</a>
+        {site.telefon && <a class="btn btn--ghost cta-ghost" href={telHref(site.telefon)}>{site.telefon}</a>}
       </div>
     </div>
   </section>
@@ -134,7 +158,7 @@ const chapters = c.historia.kapitel;
 
 <style>
   .about-hero { padding: clamp(48px, 8vw, 104px) 0 clamp(40px, 6vw, 72px); }
-  .about-hero h1 { max-width: 16em; }
+  .about-hero :global(.display) { max-width: 16em; }
   .head { max-width: 46em; margin-bottom: clamp(28px, 4vw, 48px); }
 
   /* Knowledge panels */
@@ -244,8 +268,8 @@ const chapters = c.historia.kapitel;
     const dots = [...root.querySelectorAll<HTMLElement>('[data-dot]')];
     const empty = root.querySelector<HTMLElement>('[data-story-empty]')!;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const labels = opts.map((o) => o.querySelector('.s-q')!.textContent || '');
-    const years = opts.map((o) => (o.querySelector('.s-y')!.textContent || '').toLowerCase());
+    const labels = opts.map((o) => o.querySelector('.s-q')?.textContent || '');
+    const years = opts.map((o) => (o.querySelector('.s-y')?.textContent || '').toLowerCase());
     const bodies = chs.map((c) => (c.textContent || '').toLowerCase());
     let current = 0;
     let typing = 0;

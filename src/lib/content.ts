@@ -24,8 +24,13 @@ export function splitHighlight(text: string, mark?: string) {
 }
 
 /* Text fields use blank lines between paragraphs. */
-export function paragraphs(text = ''): string[] {
-  return text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+export function paragraphs(text?: string | null): string[] {
+  return (text ?? '').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
 }
 
 export const telHref = (phone: string) => `tel:+46${phone.replace(/\D/g, '').replace(/^0/, '')}`;
+
+/* Lists from the CMS can be missing or contain empty rows */
+export function list<T = any>(value: unknown): T[] {
+  return Array.isArray(value) ? (value.filter((v) => v && typeof v === 'object') as T[]) : [];
+}

@@ -9,38 +9,47 @@ import site from '../content/installningar.json';
 import { resolveImage, telHref } from '../lib/content';
 
 interface Props {
-  title: string;
-  description: string;
+  title?: string;
+  fallbackTitle?: string;
+  description?: string;
   path?: string;
   shareImage?: string;
   shareImageAlt?: string;
   schema?: Record<string, unknown>[];
 }
-const { title, description, path = '/', shareImage, shareImageAlt, schema = [] } = Astro.props;
+const props = Astro.props;
+const s: any = site ?? {};
+const brand = s.foretag?.trim() || 'Fix IT Webbyrå';
+// Empty SEO title: use "H1 | Fix IT Webbyrå". Empty description: leave the tag out.
+const title = props.title?.trim() || (props.fallbackTitle?.trim() ? `${props.fallbackTitle.trim()} | ${brand}` : brand);
+const description = props.description?.trim() || '';
+const { path = '/', shareImage, shareImageAlt, schema = [] } = props;
 const canonical = new URL(path, Astro.site).toString();
 
 // Social share image: the page's own, otherwise the site default from settings
-const ogSource = resolveImage(shareImage) ?? resolveImage(site.delningsbild);
-const ogAlt = (shareImage ? shareImageAlt : site.delningsbild_alt) || title;
+const ownImage = resolveImage(shareImage);
+const ogSource = ownImage ?? resolveImage(s.delningsbild);
+const ogAlt = (ownImage ? shareImageAlt : s.delningsbild_alt) || title;
 const og = ogSource ? await getImage({ src: ogSource, width: 1200, format: 'jpg', quality: 82 }) : null;
 const ogUrl = og ? new URL(og.src, Astro.site).toString() : null;
 
+const address = {
+  '@type': 'PostalAddress',
+  streetAddress: s.gatuadress || undefined,
+  postalCode: s.postnummer || undefined,
+  addressLocality: s.ort || undefined,
+  addressCountry: 'SE',
+};
 const business = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
-  name: site.foretag,
-  legalName: site.juridiskt_namn,
+  name: brand,
+  legalName: s.juridiskt_namn || undefined,
   url: new URL('/', Astro.site).toString(),
   sameAs: ['https://fix-it.se/'],
-  telephone: telHref(site.telefon).replace('tel:', ''),
-  email: site.epost,
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: site.gatuadress,
-    postalCode: site.postnummer,
-    addressLocality: site.ort,
-    addressCountry: 'SE',
-  },
+  telephone: s.telefon ? telHref(s.telefon).replace('tel:', '') : undefined,
+  email: s.epost || undefined,
+  address: s.gatuadress || s.ort ? address : undefined,
   areaServed: [{ '@type': 'City', name: 'Borås' }, { '@type': 'AdministrativeArea', name: 'Västra Götaland' }],
   knowsAbout: ['Sökmotoroptimering', 'Lokal SEO', 'Google Ads', 'WordPress'],
 };
@@ -52,16 +61,16 @@ const ldjson = [business, ...schema];
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
-    <meta name="description" content={description} />
+    {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#2F354A" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="sv_SE" />
     <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    {description && <meta property="og:description" content={description} />}
     <meta property="og:url" content={canonical} />
-    <meta property="og:site_name" content={site.foretag} />
+    <meta property="og:site_name" content={brand} />
     {ogUrl && <meta property="og:image" content={ogUrl} />}
     {ogUrl && <meta property="og:image:alt" content={ogAlt} />}
     <meta name="twitter:card" content={ogUrl ? 'summary_large_image' : 'summary'} />
@@ -107,7 +116,7 @@ const ldjson = [business, ...schema];
         set('[data-rp-title]', title.length > 60 ? title.slice(0, 57) + '...' : title);
         set('[data-rp-desc]', desc.length > 158 ? desc.slice(0, 155) + '...' : desc);
         set('[data-rp-tlen]', `${title.length} tecken`, title.length <= 60 ? 'ok' : 'warn');
-        set('[data-rp-dlen]', `${desc.length} tecken`, desc.length >= 110 && desc.length <= 160 ? 'ok' : 'warn');
+        set('[data-rp-dlen]', desc.length ? `${desc.length} tecken` : 'saknas (Google väljer själv)', desc.length >= 110 && desc.length <= 160 ? 'ok' : 'warn');
         const main = document.querySelector('main');
         const h1 = main?.querySelectorAll('h1').length ?? 0;
         set('[data-rp-h1]', `${h1} st`, h1 === 1 ? 'ok' : 'warn');
