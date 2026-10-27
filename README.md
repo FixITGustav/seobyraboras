@@ -41,7 +41,7 @@ Requires Node 18.20.8 or newer (22 recommended, see `.nvmrc`).
 1. Create a free account at github.com.
 2. Click **+** (top right) → **New repository**. Name: `seobyraboras`. Private is fine. Leave everything else empty and click **Create repository**.
 3. Put this project in it (Claude can push it for you, or use GitHub Desktop).
-4. In `public/admin/config.yml`, replace `DITT-GITHUB-NAMN` with your GitHub username.
+4. In `public/admin/config.yml`, the repo is set to `FixITGustav/seobyraboras`.
 
 ### 2. Cloudflare Pages connected to GitHub
 1. Workers & Pages → Create application → **Continue to Pages** → **Connect to Git** → pick `seobyraboras`.

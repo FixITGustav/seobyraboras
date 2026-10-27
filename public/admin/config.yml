@@ -3,7 +3,7 @@
 
 backend:
   name: github
-  repo: DITT-GITHUB-NAMN/seobyraboras   # <- byt till ditt GitHub-namn
+  repo: FixITGustav/seobyraboras
   branch: main
   base_url: https://seobyraboras.se
   auth_endpoint: api/auth
