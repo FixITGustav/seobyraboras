@@ -536,6 +536,7 @@ collections:
       name: integritetspolicy
       widget: string
       required: false
+      hint: Fullständig adress, till exempel https://seobyraboras.se/integritetspolicy/. Lämna tomt så döljs alla länkar och meningar som hänvisar till integritetspolicyn.
     - label: Standardbild vid delning
       name: delningsbild
       widget: image

@@ -16,9 +16,15 @@ const brev = c.brev ?? {};
 const tack = c.tack ?? {};
 const email = site.epost?.trim() || 'info@fix-it.se';
 const greeting = brev.halsning?.trim() || 'Hej!';
-const privacy = brev.integritet?.trim() || '';
+const policyUrl = site.integritetspolicy?.trim() || '';
+// Without a policy link, sentences that point to the policy are left out
+// instead of showing "integritetspolicy" as plain text nobody can click.
+const privacy = (brev.integritet?.trim() || '')
+  .split(/(?<=[.!?])\s+/)
+  .filter((sentence: string) => policyUrl || !sentence.toLowerCase().includes('integritetspolicy'))
+  .join(' ');
 // The word "integritetspolicy" in the privacy line becomes a link to the policy
-const [privBefore, privAfter] = privacy.includes('integritetspolicy') && site.integritetspolicy
+const [privBefore, privAfter] = privacy.includes('integritetspolicy') && policyUrl
   ? privacy.split(/integritetspolicy(.*)/s)
   : [privacy, null];
 ---
@@ -89,7 +95,7 @@ const [privBefore, privAfter] = privacy.includes('integritetspolicy') && site.in
             <button class="btn" type="submit" data-send>{brev.knapp?.trim() || 'Skicka'}</button>
             <p class="status" data-status role="status"></p>
           </div>
-          {privacy && <p class="privacy">{privBefore}{privAfter !== null && <><a href={site.integritetspolicy}>integritetspolicy</a>{privAfter}</>}</p>}
+          {privacy && <p class="privacy">{privBefore}{privAfter !== null && <><a href={policyUrl}>integritetspolicy</a>{privAfter}</>}</p>}
         </div>
 
         <div class="thanks" data-thanks tabindex="-1">
