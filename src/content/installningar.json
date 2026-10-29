@@ -11,5 +11,14 @@
   "sidfot_text": "SEO, hemsidor och Google Ads för småföretag i Borås och resten av Västra Götaland.",
   "integritetspolicy": "https://fix-it.se/integritetspolicy/",
   "delningsbild": "",
-  "delningsbild_alt": ""
+  "delningsbild_alt": "",
+  "google_analytics_id": "G-4NQDCMTJ9L",
+  "cookiebar": {
+    "rubrik": "Får vi räkna besöken?",
+    "text": "Vi använder Google Analytics för att se hur många som hittar hit och vilka sidor som läses. Det sparar kakor i din webbläsare, men bara om du säger ja. Du kan ändra dig när du vill via länken längst ned på sidan.",
+    "acceptera": "Acceptera",
+    "neka": "Neka",
+    "las_mer": "Läs mer i vår integritetspolicy",
+    "installningar_lank": "Cookieinställningar"
+  }
 }

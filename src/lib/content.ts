@@ -34,3 +34,9 @@ export const telHref = (phone: string) => `tel:+46${phone.replace(/\D/g, '').rep
 export function list<T = any>(value: unknown): T[] {
   return Array.isArray(value) ? (value.filter((v) => v && typeof v === 'object') as T[]) : [];
 }
+
+/* Only accept a real GA4 measurement ID from the CMS, so nothing else can end up in a script */
+export function gaMeasurementId(value?: string | null): string {
+  const id = (value ?? '').trim().toUpperCase();
+  return /^G-[A-Z0-9]{4,20}$/.test(id) ? id : '';
+}

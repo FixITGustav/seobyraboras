@@ -1,6 +1,9 @@
 ---
 import site from '../content/installningar.json';
-import { telHref } from '../lib/content';
+import { telHref, gaMeasurementId } from '../lib/content';
+const cookieLink = gaMeasurementId((site as any).google_analytics_id)
+  ? ((site as any).cookiebar?.installningar_lank?.trim() || 'Cookieinställningar')
+  : '';
 const year = new Date().getFullYear();
 ---
 <footer class="site-footer">
@@ -32,6 +35,7 @@ const year = new Date().getFullYear();
   </div>
   <div class="wrap legal">
     <span>© {year} {site.juridiskt_namn || site.foretag}{site.orgnr && ` · Org.nr ${site.orgnr}`}</span>
+    {cookieLink && <button type="button" class="cookie-link" data-cookie-settings>{cookieLink}</button>}
     <span class="hint" data-decor>Tips: tryck <kbd>R</kbd> för att se sidan som en sökmotor</span>
   </div>
 </footer>
@@ -51,6 +55,8 @@ const year = new Date().getFullYear();
     display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px;
     margin-top: 56px; padding-top: 22px; border-top: 1px solid #30364c; font-size: .82rem; color: #8a90a6;
   }
+  .cookie-link { background: none; border: 0; padding: 0; font: inherit; color: #AEB3C6; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .cookie-link:hover { color: var(--mint); }
   kbd {
     font-family: var(--mono); font-size: .8em; padding: 1px 6px; border-radius: 4px;
     border: 1px solid #454c66; color: var(--mint);

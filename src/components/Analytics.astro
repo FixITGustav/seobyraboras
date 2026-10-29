@@ -1,0 +1,46 @@
+---
+// Google Analytics 4 with Consent Mode v2 ("advanced").
+// GA loads on every page but starts with everything denied, so no cookies are
+// set until the visitor accepts in the cookie bar. Without consent, Google only
+// receives cookieless pings that it uses for modelling.
+// Only runs on the real domain, so previews and local testing never send data.
+import site from '../content/installningar.json';
+import { gaMeasurementId } from '../lib/content';
+
+const gaId = gaMeasurementId((site as any).google_analytics_id);
+const siteHost = new URL(Astro.site ?? 'https://seobyraboras.se').hostname;
+---
+{gaId && (
+  <script is:inline define:vars={{ gaId, siteHost }}>
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+    var KEY = 'fixit-consent';
+    var MAX_AGE = 365 * 24 * 60 * 60 * 1000; // ask again after a year
+    var stored = null;
+    try {
+      var raw = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (raw && raw.v === 1 && Date.now() - raw.t < MAX_AGE) stored = raw.analytics;
+    } catch (e) {}
+    window.__fixitConsent = { key: KEY, choice: stored, gaId: gaId };
+
+    // Default: everything denied. The banner only asks about statistics, so the ad types stay denied.
+    gtag('consent', 'default', {
+      analytics_storage: 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+    });
+    if (stored === 'granted') gtag('consent', 'update', { analytics_storage: 'granted' });
+
+    var host = location.hostname.replace(/^www\./, '');
+    if (host === siteHost) {
+      gtag('js', new Date());
+      gtag('config', gaId);
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(gaId);
+      document.head.appendChild(s);
+    }
+  </script>
+)}

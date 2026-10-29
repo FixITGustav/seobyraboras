@@ -1,0 +1,143 @@
+---
+// Cookie bar for Google Analytics. Shown only when a measurement ID is set in
+// the CMS and the visitor has not made a choice (or the choice is over a year old).
+// "Acceptera" and "Neka" look identical on purpose: PTS requires that saying no
+// is as easy as saying yes, without highlighting the yes option.
+import site from '../content/installningar.json';
+import { gaMeasurementId } from '../lib/content';
+import Opt from './Opt.astro';
+
+const s: any = site ?? {};
+const gaId = gaMeasurementId(s.google_analytics_id);
+const t = s.cookiebar ?? {};
+const accept = t.acceptera?.trim() || 'Acceptera';
+const deny = t.neka?.trim() || 'Neka';
+const readMore = t.las_mer?.trim() || '';
+---
+{gaId && (
+  <section class="cookiebar" data-cookiebar hidden role="dialog" aria-modal="false"
+    aria-labelledby={t.rubrik?.trim() ? 'cookiebar-title' : undefined} aria-label={t.rubrik?.trim() ? undefined : 'Cookies'}>
+    <div class="cb-graph" aria-hidden="true" data-decor>
+      <span style="--h:38%"></span><span style="--h:62%"></span><span style="--h:48%"></span><span style="--h:84%"></span><span style="--h:70%"></span>
+    </div>
+    <div class="cb-body">
+      <Opt as="h2" class="cb-title" id="cookiebar-title" text={t.rubrik} />
+      <Opt class="cb-text" text={t.text} />
+      {readMore && s.integritetspolicy && <p class="cb-more"><a href={s.integritetspolicy}>{readMore}</a></p>}
+      <p class="cb-status" data-cb-status></p>
+      <div class="cb-actions">
+        <button type="button" class="cb-btn" data-cb-choice="denied">{deny}</button>
+        <button type="button" class="cb-btn" data-cb-choice="granted">{accept}</button>
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .cookiebar {
+    position: fixed; left: 16px; bottom: 16px; z-index: 70;
+    width: min(440px, calc(100vw - 32px));
+    display: grid; grid-template-columns: auto 1fr; gap: 16px;
+    padding: 20px 20px 18px; background: #fff; color: var(--text);
+    border: 1px solid var(--line); border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(28, 32, 49, .08), 0 24px 60px rgba(28, 32, 49, .22);
+    animation: cb-in .5s var(--ease) both;
+  }
+  .cookiebar[hidden] { display: none; }
+  @keyframes cb-in { from { opacity: 0; transform: translateY(16px); } }
+
+  /* A tiny bar chart: the thing we are asking permission to count */
+  .cb-graph {
+    display: flex; align-items: flex-end; gap: 3px; width: 44px; height: 44px; padding: 8px 7px;
+    border-radius: 12px; background: var(--mint-wash);
+  }
+  .cb-graph span {
+    flex: 1; height: var(--h); border-radius: 2px; background: var(--mint-dark);
+    transform-origin: bottom; animation: cb-bar 1.4s var(--ease) infinite alternate;
+  }
+  .cb-graph span:nth-child(2) { animation-delay: .15s; }
+  .cb-graph span:nth-child(3) { animation-delay: .3s; }
+  .cb-graph span:nth-child(4) { animation-delay: .45s; }
+  .cb-graph span:nth-child(5) { animation-delay: .6s; }
+  @keyframes cb-bar { from { transform: scaleY(.45); } }
+
+  .cb-title { font-size: 1.05rem; font-weight: 700; margin: 2px 0 .35em; color: var(--navy); letter-spacing: 0; }
+  .cb-text { font-size: .9rem; line-height: 1.55; color: var(--muted); margin: 0 0 .6em; }
+  .cb-more { font-size: .85rem; margin: 0 0 .8em; }
+  .cb-status { font-size: .82rem; color: var(--muted); margin: 0 0 .8em; }
+  .cb-status:empty { display: none; }
+
+  /* Identical buttons, no highlighted "yes" */
+  .cb-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .cb-btn {
+    min-height: 44px; padding: .7em 1em; border-radius: var(--radius-sm);
+    font: 650 .86rem/1 var(--font); letter-spacing: .02em;
+    color: var(--navy); background: #fff; border: 1.5px solid var(--navy); cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  .cb-btn:hover { background: var(--navy); color: #fff; }
+  .cb-btn[aria-pressed='true'] { background: var(--mist); }
+  .cb-btn[aria-pressed='true']:hover { background: var(--navy); }
+
+  @media (max-width: 480px) {
+    .cookiebar { grid-template-columns: 1fr; gap: 10px; padding: 18px 16px 16px; }
+    .cb-graph { width: 36px; height: 36px; padding: 6px 5px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cookiebar, .cb-graph span { animation: none; }
+  }
+
+  :global(html.robot) .cookiebar { background: #12151f; border-color: #343a52; color: #C8CCDA; font-family: var(--mono); }
+  :global(html.robot) .cb-title { color: #fff; font-family: var(--mono); }
+  :global(html.robot) .cb-text, :global(html.robot) .cb-status { color: #B9BED0; }
+  :global(html.robot) .cb-btn { background: transparent; color: var(--mint); border: 1px dashed var(--mint); font-family: var(--mono); }
+  :global(html.robot) .cb-btn:hover { background: var(--mint); color: var(--navy-ink); }
+</style>
+
+<script>
+  type Choice = 'granted' | 'denied';
+  const state = (window as any).__fixitConsent as { key: string; choice: Choice | null; gaId: string } | undefined;
+  const bar = document.querySelector<HTMLElement>('[data-cookiebar]');
+
+  if (state && bar) {
+    const status = bar.querySelector<HTMLElement>('[data-cb-status]')!;
+    const buttons = [...bar.querySelectorAll<HTMLButtonElement>('[data-cb-choice]')];
+    const gtag = (...args: unknown[]) => (window as any).gtag?.(...args);
+
+    // Remove Google Analytics cookies when consent is withdrawn
+    const clearGaCookies = () => {
+      const host = location.hostname;
+      const parts = host.split('.');
+      const domains = ['', host, '.' + host];
+      for (let i = 1; i < parts.length - 1; i++) domains.push('.' + parts.slice(i).join('.'));
+      document.cookie.split(';').map((c) => c.split('=')[0].trim())
+        .filter((name) => name === '_ga' || name.startsWith('_ga_') || name === '_gid' || name.startsWith('_gat'))
+        .forEach((name) => domains.forEach((d) => {
+          document.cookie = `${name}=; Max-Age=0; path=/${d ? `; domain=${d}` : ''}`;
+        }));
+    };
+
+    const show = (fromLink = false) => {
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.cbChoice === state.choice)));
+      status.textContent = fromLink && state.choice
+        ? (state.choice === 'granted' ? 'Just nu: du har accepterat statistikkakor.' : 'Just nu: du har nekat statistikkakor.')
+        : '';
+      bar.hidden = false;
+      if (fromLink) buttons[0]?.focus();
+    };
+
+    const choose = (choice: Choice) => {
+      state.choice = choice;
+      try { localStorage.setItem(state.key, JSON.stringify({ v: 1, analytics: choice, t: Date.now() })); } catch (e) {}
+      gtag('consent', 'update', { analytics_storage: choice });
+      if (choice === 'denied') clearGaCookies();
+      bar.hidden = true;
+    };
+
+    buttons.forEach((b) => b.addEventListener('click', () => choose(b.dataset.cbChoice as Choice)));
+    document.querySelectorAll('[data-cookie-settings]').forEach((el) =>
+      el.addEventListener('click', (e) => { e.preventDefault(); show(true); }));
+
+    if (!state.choice) show();
+  }
+</script>

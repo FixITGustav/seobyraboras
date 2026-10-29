@@ -546,3 +546,42 @@ collections:
       name: delningsbild_alt
       widget: string
       required: false
+    - label: Google Analytics mät-ID
+      name: google_analytics_id
+      widget: string
+      required: false
+      hint: Börjar med G-, till exempel G-4NQDCMTJ9L. Lämna tomt för att stänga av Google Analytics. Då försvinner också cookiebaren.
+    - label: Cookiebar
+      name: cookiebar
+      widget: object
+      required: false
+      collapsed: true
+      hint: Visas bara när ett mät-ID är ifyllt. Knapparna Acceptera och Neka ser alltid likadana ut, eftersom ett nej ska vara lika enkelt som ett ja.
+      fields:
+      - label: Rubrik
+        name: rubrik
+        widget: string
+        required: false
+      - label: Text
+        name: text
+        widget: text
+        required: false
+        hint: Berätta vad kakorna används till. Var konkret.
+      - label: 'Knapp: acceptera'
+        name: acceptera
+        widget: string
+        required: false
+      - label: 'Knapp: neka'
+        name: neka
+        widget: string
+        required: false
+      - label: Länktext till integritetspolicyn
+        name: las_mer
+        widget: string
+        required: false
+        hint: Länken går till adressen under Länk till integritetspolicy.
+      - label: Länktext i sidfoten
+        name: installningar_lank
+        widget: string
+        required: false
+        hint: Länken där besökaren kan ändra sitt val i efterhand.

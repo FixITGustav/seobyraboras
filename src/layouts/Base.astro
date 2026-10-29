@@ -5,6 +5,8 @@ import { getImage } from 'astro:assets';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import RobotPanel from '../components/RobotPanel.astro';
+import Analytics from '../components/Analytics.astro';
+import CookieBar from '../components/CookieBar.astro';
 import site from '../content/installningar.json';
 import { resolveImage, telHref } from '../lib/content';
 
@@ -65,6 +67,7 @@ const ldjson = [business, ...schema];
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#2F354A" />
+    <Analytics />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="sv_SE" />
     <meta property="og:title" content={title} />
@@ -89,6 +92,7 @@ const ldjson = [business, ...schema];
     </main>
     <Footer />
     <RobotPanel />
+    <CookieBar />
 
     <style>
       .skip { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--navy); color: #fff; padding: 10px 14px; border-radius: 8px; }
