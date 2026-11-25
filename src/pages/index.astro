@@ -186,7 +186,7 @@ const trust = list(hero.fortroende);
   }
   .hero-grid { position: relative; display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(32px, 5vw, 72px); align-items: center; }
   .hero :global(.display) { margin-bottom: .45em; }
-  .hero .lead { margin-bottom: 1.8em; }
+  .hero :global(.lead) { margin-bottom: 1.8em; }
   .proof { list-style: none; margin: 40px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 14px 32px; }
   .proof li { display: grid; padding-left: 14px; border-left: 2px solid var(--mint); line-height: 1.35; }
   .proof strong { color: var(--navy); font-size: .98rem; }
@@ -224,7 +224,7 @@ const trust = list(hero.fortroende);
 
   /* ROBOT INVITE */
   .invite-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
-  .invite .lead { margin-bottom: 1.6em; }
+  .invite :global(.lead) { margin-bottom: 1.6em; }
   .when-robot-i { display: none; }
   :global(html.robot) .when-human-i { display: none; }
   :global(html.robot) .when-robot-i { display: inline; }
@@ -271,7 +271,7 @@ const trust = list(hero.fortroende);
   /* CTA */
   .cta { text-align: center; }
   .cta-inner { display: grid; justify-items: center; }
-  .cta .lead { margin-inline: auto; margin-bottom: 1.6em; }
+  .cta :global(.lead) { margin-inline: auto; margin-bottom: 1.6em; }
   .cta .btn-row { justify-content: center; }
   .cta-ghost { --fg: #fff; --bd: #6b728c; text-transform: none; letter-spacing: 0; }
   .cta-ghost:hover { background: #fff; --fg: var(--navy); }
