@@ -10,7 +10,8 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource-variable/raleway": "^5.3.0",
-    "astro": "^5.18.2"
+    "astro": "^5.18.2",
+    "marked": "^14.1.4"
   },
   "type": "module",
   "private": true,

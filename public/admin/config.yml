@@ -77,7 +77,11 @@ collections:
         required: false
       - label: Ingress
         name: ingress
-        widget: text
+        widget: markdown
+        minimal: true
+        buttons: [bold, italic, link, bulleted-list, numbered-list]
+        editor_components: []
+        modes: [rich_text, raw]
         required: false
       - label: Knapptext
         name: knapp
@@ -112,7 +116,11 @@ collections:
         required: false
       - label: Ingress
         name: ingress
-        widget: text
+        widget: markdown
+        minimal: true
+        buttons: [bold, italic, link, bulleted-list, numbered-list]
+        editor_components: []
+        modes: [rich_text, raw]
         required: false
       - label: Tjänstekort
         name: lista
@@ -125,7 +133,11 @@ collections:
           required: false
         - label: Text
           name: text
-          widget: text
+          widget: markdown
+          minimal: true
+          buttons: [bold, italic, link, bulleted-list, numbered-list]
+          editor_components: []
+          modes: [rich_text, raw]
           required: false
         - label: Typisk sökning
           name: sokning
@@ -148,7 +160,11 @@ collections:
         required: false
       - label: Text
         name: text
-        widget: text
+        widget: markdown
+        minimal: true
+        buttons: [bold, italic, link, bulleted-list, numbered-list]
+        editor_components: []
+        modes: [rich_text, raw]
         required: false
       - label: Knapptext
         name: knapp
@@ -169,7 +185,11 @@ collections:
         required: false
       - label: Ingress
         name: ingress
-        widget: text
+        widget: markdown
+        minimal: true
+        buttons: [bold, italic, link, bulleted-list, numbered-list]
+        editor_components: []
+        modes: [rich_text, raw]
         required: false
       - label: Steg
         name: steg
@@ -183,7 +203,11 @@ collections:
           required: false
         - label: Text
           name: text
-          widget: text
+          widget: markdown
+          minimal: true
+          buttons: [bold, italic, link, bulleted-list, numbered-list]
+          editor_components: []
+          modes: [rich_text, raw]
           required: false
         required: false
       required: false
@@ -201,7 +225,11 @@ collections:
         required: false
       - label: Text
         name: text
-        widget: text
+        widget: markdown
+        minimal: true
+        buttons: [bold, italic, link, bulleted-list, numbered-list]
+        editor_components: []
+        modes: [rich_text, raw]
         hint: Lämna en tom rad mellan stycken.
         required: false
       - label: Bild
@@ -230,7 +258,11 @@ collections:
         required: false
       - label: Ingress
         name: ingress
-        widget: text
+        widget: markdown
+        minimal: true
+        buttons: [bold, italic, link, bulleted-list, numbered-list]
+        editor_components: []
+        modes: [rich_text, raw]
         required: false
       - label: Frågor
         name: fragor
@@ -244,7 +276,11 @@ collections:
           required: false
         - label: Svar
           name: svar
-          widget: text
+          widget: markdown
+          minimal: true
+          buttons: [bold, italic, link, bulleted-list, numbered-list]
+          editor_components: []
+          modes: [rich_text, raw]
           required: false
         required: false
       required: false
@@ -258,7 +294,11 @@ collections:
         required: false
       - label: Text
         name: text
-        widget: text
+        widget: markdown
+        minimal: true
+        buttons: [bold, italic, link, bulleted-list, numbered-list]
+        editor_components: []
+        modes: [rich_text, raw]
         required: false
       - label: Knapptext
         name: knapp
@@ -291,7 +331,11 @@ collections:
         required: false
       - label: Ingress
         name: ingress
-        widget: text
+        widget: markdown
+        minimal: true
+        buttons: [bold, italic, link, bulleted-list, numbered-list]
+        editor_components: []
+        modes: [rich_text, raw]
         required: false
       required: false
     - label: Personer
@@ -346,7 +390,11 @@ collections:
         required: false
       - label: Ingress
         name: ingress
-        widget: text
+        widget: markdown
+        minimal: true
+        buttons: [bold, italic, link, bulleted-list, numbered-list]
+        editor_components: []
+        modes: [rich_text, raw]
         required: false
       - label: Kapitel
         name: kapitel
@@ -369,7 +417,11 @@ collections:
           required: false
         - label: Text
           name: text
-          widget: text
+          widget: markdown
+          minimal: true
+          buttons: [bold, italic, link, bulleted-list, numbered-list]
+          editor_components: []
+          modes: [rich_text, raw]
           required: false
         required: false
       required: false
@@ -396,7 +448,11 @@ collections:
           required: false
         - label: Text
           name: text
-          widget: text
+          widget: markdown
+          minimal: true
+          buttons: [bold, italic, link, bulleted-list, numbered-list]
+          editor_components: []
+          modes: [rich_text, raw]
           required: false
         required: false
       required: false
@@ -410,7 +466,11 @@ collections:
         required: false
       - label: Text
         name: text
-        widget: text
+        widget: markdown
+        minimal: true
+        buttons: [bold, italic, link, bulleted-list, numbered-list]
+        editor_components: []
+        modes: [rich_text, raw]
         required: false
       - label: Knapptext
         name: knapp
@@ -443,7 +503,11 @@ collections:
         required: false
       - label: Ingress
         name: ingress
-        widget: text
+        widget: markdown
+        minimal: true
+        buttons: [bold, italic, link, bulleted-list, numbered-list]
+        editor_components: []
+        modes: [rich_text, raw]
         required: false
       required: false
     - label: Brevet
@@ -474,12 +538,20 @@ collections:
         required: false
       - label: Text
         name: text
-        widget: text
+        widget: markdown
+        minimal: true
+        buttons: [bold, italic, link, bulleted-list, numbered-list]
+        editor_components: []
+        modes: [rich_text, raw]
         required: false
       required: false
     - label: Text under förhandsvisningen
       name: forhandsvisning
-      widget: text
+      widget: markdown
+      minimal: true
+      buttons: [bold, italic, link, bulleted-list, numbered-list]
+      editor_components: []
+      modes: [rich_text, raw]
       required: false
 - name: installningar
   label: Inställningar

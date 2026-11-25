@@ -3,6 +3,7 @@
 // that only looks like a headline. Every part is optional.
 import Highlight from './Highlight.astro';
 import Opt from './Opt.astro';
+import Rich from './Rich.astro';
 interface Props {
   h1?: string;
   rubrik?: string;
@@ -13,4 +14,4 @@ const { h1, rubrik, markering, ingress } = Astro.props;
 ---
 <Opt as="h1" class="eyebrow" text={h1} />
 {rubrik?.trim() && <h2 class="display"><Highlight text={rubrik.trim()} mark={markering?.trim()} /></h2>}
-<Opt as="p" class="lead" text={ingress} />
+<Rich class="lead" text={ingress} />

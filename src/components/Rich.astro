@@ -1,0 +1,15 @@
+---
+// Text from a rich text field in the CMS. A single paragraph is rendered in
+// the given tag (a <p> by default), so existing styles keep working. Text with
+// several paragraphs or a list becomes a <div> with the same class. Empty
+// fields render nothing. Usage: <Rich class="lead" text={value} />
+import { richBlock, richInline, isMultiBlock } from '../lib/rich';
+interface Props { as?: string; text?: string | null; class?: string; [key: string]: unknown }
+const { as: Tag = 'p', text, class: cls, ...rest } = Astro.props;
+const value = typeof text === 'string' ? text.trim() : '';
+const multi = isMultiBlock(value);
+const html = multi ? richBlock(value) : richInline(value);
+---
+{value && (multi
+  ? <div class:list={[cls, 'rich']} {...rest} set:html={html} />
+  : <Tag class={cls} {...rest} set:html={html} />)}

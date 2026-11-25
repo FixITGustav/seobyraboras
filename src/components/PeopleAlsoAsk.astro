@@ -1,5 +1,6 @@
 ---
-// "Folk frågar också": open a question and a new one appears below, the way
+
+import { richBlock } from '../lib/rich';// "Folk frågar också": open a question and a new one appears below, the way
 // a search engine keeps feeding you questions. Every answer is in the HTML
 // from the start, so crawlers and visitors without JavaScript see them all.
 interface QA { q: string; a: string }
@@ -13,7 +14,7 @@ const { items, start = 4 } = Astro.props;
         <span class="q">{it.q}</span>
         <span class="chev" aria-hidden="true"></span>
       </summary>
-      <div class="a"><p>{it.a}</p></div>
+      <div class="a rich" set:html={richBlock(it.a)} />
     </details>
   ))}
   <p class="paa-count" data-paa-count aria-live="polite" data-decor></p>
@@ -45,7 +46,8 @@ const { items, start = 4 } = Astro.props;
   }
   details[open] .chev { transform: rotate(180deg); background: var(--mint); border-color: var(--mint); }
   .a { padding: 0 4px 20px; color: var(--muted); max-width: 44em; }
-  .a p { margin: 0; }
+  .a :global(p) { margin: 0 0 .6em; }
+  .a :global(p:last-child) { margin-bottom: 0; }
   details[open] .a { animation: fade .4s var(--ease); }
   @keyframes fade { from { opacity: 0; transform: translateY(-4px); } }
   .paa-count { margin: 14px 0 0; font-size: .85rem; color: var(--muted); }

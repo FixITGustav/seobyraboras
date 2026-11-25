@@ -57,6 +57,13 @@ h3 { font-size: 1.25rem; font-weight: 650; }
 p { margin: 0 0 1em; }
 
 a { color: var(--navy); text-decoration-color: var(--mint-dark); text-underline-offset: 3px; }
+/* Text from the CMS rich text fields: links, lists, several paragraphs */
+.rich > :last-child { margin-bottom: 0; }
+.rich ul, .rich ol { margin: 0 0 1em; padding-left: 1.25em; }
+.rich li { margin: .3em 0; }
+.rich li::marker { color: var(--mint-dark); }
+p a, li a, .lead a { font-weight: 600; text-decoration-thickness: 2px; }
+.section--navy a:not(.btn) { color: #fff; text-decoration-color: var(--mint); }
 a:hover { color: var(--mint-dark); }
 
 :focus-visible { outline: 3px solid var(--mint); outline-offset: 3px; border-radius: 4px; }

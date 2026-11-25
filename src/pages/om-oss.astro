@@ -6,6 +6,7 @@ import Opt from '../components/Opt.astro';
 import data from '../content/om-oss.json';
 import site from '../content/installningar.json';
 import { resolveImage, telHref, list } from '../lib/content';
+import Rich from '../components/Rich.astro';
 
 // Every field is optional in the CMS, so read everything defensively
 const c: any = data ?? {};
@@ -79,7 +80,7 @@ const values = list(varden.lista);
         <div class="head" data-reveal>
           <Opt class="eyebrow" text={hist.overrubrik} />
           <Opt as="h2" text={hist.rubrik} />
-          <Opt class="lead" text={hist.ingress} />
+          <Rich class="lead" text={hist.ingress} />
         </div>
 
         <div class="story" data-story>
@@ -107,7 +108,7 @@ const values = list(varden.lista);
               <article class="chapter" data-ch={i} aria-labelledby={`ch-${i}`}>
                 <Opt class="ch-year" text={ch.tid} />
                 <Opt as="h3" id={`ch-${i}`} text={ch.rubrik} />
-                <Opt text={ch.text} />
+                <Rich text={ch.text} />
               </article>
             ))}
             <div class="ch-nav" data-decor>
@@ -136,7 +137,7 @@ const values = list(varden.lista);
             <div class="value" data-reveal style={`transition-delay:${i * 100}ms`}>
               <span class="v-n" aria-hidden="true">{i + 1}</span>
               <Opt as="h3" text={v.rubrik} />
-              <Opt text={v.text} />
+              <Rich text={v.text} />
             </div>
           ))}
         </div>
@@ -147,7 +148,7 @@ const values = list(varden.lista);
   <section class="section section--navy cta">
     <div class="wrap cta-inner" data-reveal>
       <Opt as="h2" text={cta.rubrik} />
-      <Opt class="lead" text={cta.text} />
+      <Rich class="lead" text={cta.text} />
       <div class="btn-row">
         <a class="btn btn--mint" href="/kontakt/">{cta.knapp?.trim() || 'Kontakta oss'}</a>
         {site.telefon && <a class="btn btn--ghost cta-ghost" href={telHref(site.telefon)}>{site.telefon}</a>}

@@ -9,6 +9,8 @@ import Opt from '../components/Opt.astro';
 import data from '../content/hem.json';
 import site from '../content/installningar.json';
 import { resolveImage, paragraphs, telHref, list } from '../lib/content';
+import Rich from '../components/Rich.astro';
+import { richBlock, richPlain } from '../lib/rich';
 
 // Every field is optional in the CMS, so read everything defensively
 const c: any = data ?? {};
@@ -25,7 +27,7 @@ const faq = list(fq.fragor).filter((f: any) => f?.fraga?.trim() && f?.svar?.trim
 const faqSchema = faq.length ? [{
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: richPlain(f.a) } })),
 }] : [];
 const borasImage = resolveImage(boras.bild);
 const steps = list(proc.steg);
@@ -67,14 +69,14 @@ const trust = list(hero.fortroende);
       <div class="head" data-reveal>
         <Opt class="eyebrow" text={tj.overrubrik} />
         <Opt as="h2" text={tj.rubrik} />
-        <Opt class="lead" text={tj.ingress} />
+        <Rich class="lead" text={tj.ingress} />
       </div>
       <div class="cards">
         {list(tj.lista).map((s: any, i: number) => (
           <article class="card" data-reveal style={`transition-delay:${(i % 3) * 90}ms`}>
             <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
             <Opt as="h3" text={s.rubrik} />
-            <Opt text={s.text} />
+            <Rich text={s.text} />
             {s.sokning?.trim() && <p class="query"><span class="q-icon" aria-hidden="true"></span><span class="q-label">Typisk sökning:</span> <span class="q-text">{s.sokning}</span></p>}
           </article>
         ))}
@@ -88,7 +90,7 @@ const trust = list(hero.fortroende);
       <div data-reveal>
         <Opt class="eyebrow" text={robot.overrubrik} />
         <Opt as="h2" text={robot.rubrik} />
-        <Opt class="lead" text={robot.text} />
+        <Rich class="lead" text={robot.text} />
         <button class="btn btn--mint" type="button" data-robot-invite>
           <span class="when-human-i">{robot.knapp?.trim() || 'Visa robotläget'}</span><span class="when-robot-i">Tillbaka till människoläget</span>
         </button>
@@ -113,7 +115,7 @@ const trust = list(hero.fortroende);
       <div class="head" data-reveal>
         <Opt class="eyebrow" text={proc.overrubrik} />
         <Opt as="h2" text={proc.rubrik} />
-        <Opt class="lead" text={proc.ingress} />
+        <Rich class="lead" text={proc.ingress} />
       </div>
       {steps.length > 0 && (
         <ol class="steps" data-steps style={`--cols:${Math.min(4, steps.length)}`}>
@@ -121,7 +123,7 @@ const trust = list(hero.fortroende);
             <li class="step" data-reveal style={`transition-delay:${i * 140}ms`}>
               <span class="dot" aria-hidden="true">{i + 1}</span>
               <Opt as="h3" text={s.rubrik} />
-              <Opt text={s.text} />
+              <Rich text={s.text} />
             </li>
           ))}
         </ol>
@@ -135,7 +137,7 @@ const trust = list(hero.fortroende);
       <div data-reveal>
         <Opt class="eyebrow" text={boras.overrubrik} />
         <Opt as="h2" text={boras.rubrik} />
-        {paragraphs(boras.text).map((p) => <p>{p}</p>)}
+        <Fragment set:html={richBlock(boras.text)} />
         <a class="btn btn--ghost" href="/om-oss/">Läs mer om oss</a>
       </div>
       <div data-reveal class="boras-visual">
@@ -154,7 +156,7 @@ const trust = list(hero.fortroende);
         <div class="head" data-reveal>
           <Opt class="eyebrow" text={fq.overrubrik} />
           <Opt as="h2" text={fq.rubrik} />
-          <Opt class="lead" text={fq.ingress} />
+          <Rich class="lead" text={fq.ingress} />
         </div>
         <PeopleAlsoAsk items={faq} start={4} />
       </div>
@@ -165,7 +167,7 @@ const trust = list(hero.fortroende);
   <section class="section section--navy cta">
     <div class="wrap cta-inner" data-reveal>
       <Opt as="h2" text={cta.rubrik} />
-      <Opt class="lead" text={cta.text} />
+      <Rich class="lead" text={cta.text} />
       <div class="btn-row">
         <a class="btn btn--mint" href="/kontakt/">{cta.knapp?.trim() || 'Kontakta oss'}</a>
         {site.epost && <a class="btn btn--ghost cta-ghost" href={`mailto:${site.epost}`}>{site.epost}</a>}

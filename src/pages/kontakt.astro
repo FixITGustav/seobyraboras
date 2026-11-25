@@ -5,6 +5,7 @@ import Opt from '../components/Opt.astro';
 import data from '../content/kontakt.json';
 import site from '../content/installningar.json';
 import { telHref } from '../lib/content';
+import Rich from '../components/Rich.astro';
 // Where the form posts. Set PUBLIC_FORM_ENDPOINT in Cloudflare Pages (for example a
 // Formspree or Web3Forms URL). Without it the form opens the visitor's mail app instead.
 const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT || '';
@@ -101,7 +102,7 @@ const [privBefore, privAfter] = privacy.includes('integritetspolicy') && policyU
         <div class="thanks" data-thanks tabindex="-1">
           <div class="env" aria-hidden="true"><span class="flap"></span></div>
           <h2>{tack.rubrik?.trim() || 'Tack!'}</h2>
-          <p data-thanks-text>{tack.text}</p>
+          {tack.text?.trim() ? <Rich data-thanks-text text={tack.text} /> : <p data-thanks-text></p>}
         </div>
       </form>
 
@@ -117,7 +118,7 @@ const [privBefore, privAfter] = privacy.includes('integritetspolicy') && policyU
             <p class="pv-title" data-pv-title>Takläggare i Borås | Ditt företag</p>
             <p class="pv-desc" data-pv-desc>Ditt företag hjälper dig med takläggare i Borås. Ring oss eller boka direkt på hemsidan.</p>
           </div>
-          <Opt class="pv-note" text={c.forhandsvisning} />
+          <Rich class="pv-note" text={c.forhandsvisning} />
         </div>
 
         <div class="tiles">
